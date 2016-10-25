@@ -180,6 +180,11 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 	currentRoll -= RollOffset;
 	ROS_INFO("New Roll and stuff %f", currentRoll);
+	
+	float rc_speed=RCInput.read(3)
+	ROS_INFO("PWM RC %f", rc_speed);
+	
+	printf("test si ta mere suce \n")
 
 	// pour afficher pwm steering du remote controller
 	// pour afficher pwm throttle du remotre controller
@@ -294,7 +299,7 @@ int main(int argc, char **argv)
 	/* Initialize the RC input, and PWM output */
 	/*******************************************/
 
-	RCInput rcin;
+	RCInput rcin;		//Eric renamed the class created by the RCinput library
 	rcin.init();
 	PWM servo;
 	PWM motor;
@@ -355,7 +360,8 @@ int main(int argc, char **argv)
 		int desired_pwm = 0;
 		if(rcin.read(3) > 1500) desired_pwm = ((float)rcin.read(3)-1500.0f)*((float)saturation - 1500.0f)/500.0f + 1500.0f;
 		else desired_pwm = rcin.read(3);
-//if(rcin.read(3) >= saturation)
+		
+		//if(rcin.read(3) >= saturation)
 		//	desired_pwm = saturation;
 		//else
 		//	desired_pwm = rcin.read(3);
