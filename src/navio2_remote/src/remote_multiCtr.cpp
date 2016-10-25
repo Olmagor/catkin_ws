@@ -180,11 +180,9 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 	currentRoll -= RollOffset;
 	ROS_INFO("New Roll and stuff %f", currentRoll);
+
 	
-	float rc_speed=RCInput.read(3)
-	ROS_INFO("PWM RC %f", rc_speed);
-	
-	printf("test si ta mere suce \n")
+	// printf("test si ta mere suce \n")
 
 	// pour afficher pwm steering du remote controller
 	// pour afficher pwm throttle du remotre controller
@@ -344,7 +342,9 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-
+		
+		ROS_INFO("PWM RC %i", RCInpunt.read(3));
+		
 		/*******************************************/
 		/*             ROLL SECTION                */
 		/*******************************************/
