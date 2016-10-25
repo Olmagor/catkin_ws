@@ -29,7 +29,7 @@ float Ki2[3] = {2.23f, 5.89f, 5.83f};
 float Kd2[3] = {0, 0.0465f, 0.0195f};
 
 //full range of motor
-#define MAX_IERR_MOTOR 20.6
+#define MAX_IERR_MOTOR 40 // old value 20.6
 
 float max_roll_angle = 30.0f;
 
@@ -158,7 +158,7 @@ int pid_Motor_Output(int desired_speed) // desired speed in m/s
 	//PID CONTROLLER
 	float controlSignal = Kp_m*err_m + Kierr_m + Kd_m*derr_m; // should be between 0 and 20.6m/s (3900*8.4*0.4*0.24*2*pi/60*62.5*10-3)
 
-	int pwmSignal = (int)((controlSignal*500.0f)/20.6f)+1500;
+	int pwmSignal = (int)((controlSignal*500.0f)/MAX_IERR_MOTOR)+1500;
 	if(pwmSignal > 2000) pwmSignal = 2000;
 	if(pwmSignal < 1500) pwmSignal = 1500;
 
@@ -361,7 +361,7 @@ int main(int argc, char **argv)
 		//	desired_pwm = rcin.read(3);
 
 		//get derired speed in m/s using desired pwm
-		desired_speed = 20.6f*((float)desired_pwm-1500)/(500.0f);
+		desired_speed = MAX_IERR_MOTOR*((float)desired_pwm-1500)/(500.0f);
 		if(desired_speed < 0) desired_speed = 0.0f;
 
 		//Read current Speed in m/s
