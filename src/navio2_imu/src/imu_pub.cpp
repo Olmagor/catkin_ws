@@ -218,7 +218,7 @@ void update_imu_msg(sensor_msgs::Imu* imu_msg, InertialSensor* imu)
 	imu_msg->linear_acceleration.y = ay*G_SI;
 	imu_msg->linear_acceleration.z = az*G_SI;
 
-	printf("Attitude, my dick yeah: [Roll:%+05.2f]  [Pitch:%+05.2f]  [Yaw:%+05.2f] \n [Period:%.4fs]  [Rate:%dHz] \n \n", roll, pitch, yaw, dt, int(1/dt));
+	printf("Attitude: [Roll:%+05.2f]  [Pitch:%+05.2f]  [Yaw:%+05.2f] \n [Period:%.4fs]  [Rate:%dHz] \n \n", roll, pitch, yaw, dt, int(1/dt));
 
 }
 
