@@ -29,7 +29,7 @@ float Ki2[3] = {2.23f, 5.89f, 5.83f};
 float Kd2[3] = {0, 0.0465f, 0.0195f};
 
 //full range of motor
-#define MAX_IERR_MOTOR 40 // old value 20.6
+#define MAX_IERR_MOTOR 20.6 // old value 20.6
 
 float max_roll_angle = 30.0f;
 
@@ -182,9 +182,6 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 	currentRoll -= RollOffset;
 	ROS_INFO("New Roll %f", currentRoll);
-
-	// pour afficher pwm steering du remote controller
-	// pour afficher pwm throttle du remotre controller
 }
 
 int main(int argc, char **argv)
@@ -341,8 +338,6 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-
-
 		/*******************************************/
 		/*             ROLL SECTION                */
 		/*******************************************/
@@ -354,9 +349,11 @@ int main(int argc, char **argv)
 		/*             VELOCITY SECTION            */
 		/*******************************************/
 
-		//Get Desired PWM Speed using Throttle saturation
+		//Get Desired PWM Speed using Throttle saturation, saturation being the max value of pwm
 		int desired_pwm = 0;
-		if(rcin.read(3) > 1500) desired_pwm = ((float)rcin.read(3)-1500.0f)*((float)saturation - 1500.0f)/500.0f + 1500.0f;
+		float pwm_RC = (float)rcin.read(3);
+		if(rcin.read(3) > 1500)
+			desired_pwm = ((float)rcin.read(3)-1500.0f)*((float)saturation - 1500.0f)/500.0f + 1500.0f;
 		else desired_pwm = rcin.read(3);
 			
 		//if(rcin.read(3) >= saturation)
@@ -368,7 +365,7 @@ int main(int argc, char **argv)
 		desired_speed = MAX_IERR_MOTOR*((float)desired_pwm-1500)/(500.0f);
 		if(desired_speed < 0) desired_speed = 0.0f;
 		
-		ROS_INFO("Desired_pwm %i and Desired Speed : %f", desired_pwm, desired_speed); //added byPascal, to test
+		ROS_INFO("Desired_pwm %i and Desired Speed %f and pwm RC %f ", desired_pwm, desired_speed, pwm_RC); //added byPascal, to test
 
 		//Read current Speed in m/s
 		dtf = rcin.read(5)-1000;
