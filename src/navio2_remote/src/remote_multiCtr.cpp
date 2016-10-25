@@ -182,7 +182,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	ROS_INFO("New Roll and stuff %f", currentRoll);
 
 	
-	// printf("test si ta mere suce \n")
+	printf("test si ta mere suce \n")
 
 	// pour afficher pwm steering du remote controller
 	// pour afficher pwm throttle du remotre controller
