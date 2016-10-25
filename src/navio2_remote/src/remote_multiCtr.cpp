@@ -133,6 +133,7 @@ int pid_Servo_Output(int desired_roll) //in degrees
 	return pwmSignal;
 }
 
+/*	added by Pascal, no need of a PID controller, open loop is sufficent
 int pid_Motor_Output(int desired_speed) // desired speed in m/s
 {
 	//calculate errors
@@ -161,9 +162,10 @@ int pid_Motor_Output(int desired_speed) // desired speed in m/s
 	int pwmSignal = (int)((controlSignal*500.0f)/MAX_IERR_MOTOR)+1500;
 	if(pwmSignal > 2000) pwmSignal = 2000;
 	if(pwmSignal < 1500) pwmSignal = 1500;
-
+	
 	return pwmSignal;
 }
+*/
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -179,7 +181,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	if(the_time < 15) RollOffset = currentRoll;
 
 	currentRoll -= RollOffset;
-	ROS_INFO("New Roll and stuff %f", currentRoll);
+	ROS_INFO("New Roll %f", currentRoll);
 
 	// pour afficher pwm steering du remote controller
 	// pour afficher pwm throttle du remotre controller
@@ -339,7 +341,8 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-		ROS_INFO("test 123 nous irons au bois");
+
+
 		/*******************************************/
 		/*             ROLL SECTION                */
 		/*******************************************/
@@ -355,7 +358,7 @@ int main(int argc, char **argv)
 		int desired_pwm = 0;
 		if(rcin.read(3) > 1500) desired_pwm = ((float)rcin.read(3)-1500.0f)*((float)saturation - 1500.0f)/500.0f + 1500.0f;
 		else desired_pwm = rcin.read(3);
-		
+			
 		//if(rcin.read(3) >= saturation)
 		//	desired_pwm = saturation;
 		//else
@@ -364,6 +367,8 @@ int main(int argc, char **argv)
 		//get derired speed in m/s using desired pwm
 		desired_speed = MAX_IERR_MOTOR*((float)desired_pwm-1500)/(500.0f);
 		if(desired_speed < 0) desired_speed = 0.0f;
+		
+		ROS_INFO("Desired_pwm %i and Desired Speed : %f", desired_pwm, desired_speed); //added byPascal, to test
 
 		//Read current Speed in m/s
 		dtf = rcin.read(5)-1000;
@@ -381,14 +386,12 @@ int main(int argc, char **argv)
 
 		//calculate output to motor from pid controller
 		motor_input = desired_pwm; // pid_Motor_Output(desired_speed);
-		if(desired_pwm < 1500)
-			motor_input = desired_pwm;
 
 		//calculate output to servo from pid controller
 		servo_input = pid_Servo_Output(pid_Ref_Output(desired_roll));
 
 		//write readings on pwm output
-		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);
+		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);	// ..(pins, value of PWM)
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
 
 		//Measure time for initial roll calibration
