@@ -179,7 +179,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	if(the_time < 15) RollOffset = currentRoll;
 
 	currentRoll -= RollOffset;
-	ROS_INFO("New Roll %f", currentRoll);
+	ROS_INFO("New Roll and stuff %f", currentRoll);
 
 	ROS_INFO("PWM steering %f", rcin.read(2));      // pour afficher pwm steering du remote controller
 	ROS_INFO("PWM throttle %f", rcin.read(3));       // pour afficher pwm throttle du remotre controller
