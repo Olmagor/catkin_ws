@@ -342,9 +342,7 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-		
-		ROS_INFO("PWM RC %i", RCInpunt.read(3));
-		
+
 		/*******************************************/
 		/*             ROLL SECTION                */
 		/*******************************************/
