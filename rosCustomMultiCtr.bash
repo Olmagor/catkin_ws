@@ -68,7 +68,7 @@ then
         tmux send-keys "cd /home/pi/bagfiles" C-m
         tmux send-keys "rosbag record -a" C-m
 else
-    echo "Usage :   ./rosCustom.bash [freq] [MaxThrottlePwm] [Kp] [Ki] [Kd] [-log], -log is not necessary \n" #MaxThrottlePwm is limited to 2000 in the cpp
+    echo "Usage :   ./rosCustom.bash [freq] [MaxThrottlePwm] [Kp] [Ki] [Kd] [-log], -log is not necessary" #MaxThrottlePwm is limited to 2000 in the cpp
     echo "Or :      ./rosCustom.bash auto : for automatic mode i.e. freq= 50, MaxThrottlePwm=2000, Kp=0.7, Ki=0.7, Kd=0"
     exit 0
 fi
