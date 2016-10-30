@@ -194,8 +194,6 @@ int main(int argc, char **argv)
 
 	ROS_INFO("number of argc %d", argc);
 	
-	sleep(2000);
-	
 	//case with the 5 or 6 arguments: frequency, MaxThrottlePwm, Kp, Ki, Kd and -log 
 	if(atoi(argv[1]) > 0 )
 		freq = atoi(argv[1]);
