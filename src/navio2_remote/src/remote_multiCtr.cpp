@@ -194,6 +194,8 @@ int main(int argc, char **argv)
 
 	ROS_INFO("number of argc %d", argc);
 	
+	wait 1000;
+	
 	//case with the 5 or 6 arguments: frequency, MaxThrottlePwm, Kp, Ki, Kd and -log 
 	if(atoi(argv[1]) > 0 )
 		freq = atoi(argv[1]);
@@ -202,7 +204,7 @@ int main(int argc, char **argv)
 		ROS_INFO("Frequency must be more than 0");
 		return 0;
 	}
-
+	
 	if( 0 < atoi(argv[2]) < 2000) MaxThrottlePwm = atoi(argv[2]);
 
 	Kp_m = atof(argv[3]);
@@ -365,6 +367,7 @@ int main(int argc, char **argv)
 		/*******************************************/
 
 		//Get Desired PWM Speed using MaxThrottlePwm being the max value of pwm for the throttle
+		
 		int desired_pwm = rcin.read(3);
 		if(desired_pwm > 1500)		//only needed if MaxThrottlePwm is below 2000
 			desired_pwm = (desired_pwm -1500.0)*(MaxThrottlePwm - 1500.0)/500.0 + 1500.0;
