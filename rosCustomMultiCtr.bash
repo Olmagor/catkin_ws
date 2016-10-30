@@ -15,7 +15,7 @@ then
     tmux select-pane -t 1
     tmux send-keys "sleep 5" C-m
     tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
-    tmux send-keys "rosrun navio2_imu imu_pub $(($1-1))" C-m
+    tmux send-keys "rosrun navio2_imu imu_pub 49" C-m
     tmux select-pane -t 0
     tmux split-window -v
     tmux send-keys "sleep 5" C-m
