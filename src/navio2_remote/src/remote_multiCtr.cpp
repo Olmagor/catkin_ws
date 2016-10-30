@@ -378,7 +378,7 @@ int main(int argc, char **argv)
 		desired_speed = MAX_IERR_MOTOR*((float)desired_pwm-1500)/(500.0f);
 		if(desired_speed < 0) desired_speed = 0.0f;
 		
-		ROS_INFO("Desired_pwm %i and Desired Speed %f and pwm RC %f ", desired_pwm, desired_speed, pwm_RC); //added byPascal, to test
+		ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
 
 		//Read current Speed in m/s
 		dtf = rcin.read(5)-1000;
