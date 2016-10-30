@@ -22,7 +22,7 @@ then
     tmux send-keys "sudo -i" C-m
     tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
     tmux send-keys "rosrun navio2_remote remote_multiCtr $1 $2 $3 $4 $5" C-m
-    elif [ "$#" -eq 6] && [ "$6" == "-log" ]          #to active the writing of the log files
+    elif [ "$#" -eq 6] && [ "$6" == '-log' ]          #to active the writing of the log files
     then
         echo "Here we go WITH log files"
         sleep 2
