@@ -203,7 +203,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	if( 0 < atoi(argv[2]) < 2000) atoi(argv[2]) = MaxThrottlePwm;
+	if( 0 < atoi(argv[2]) < 2000) MaxThrottlePwm = atoi(argv[2]);
 
 	Kp_m = atof(argv[3]);
 	Ki_m = atof(argv[4]);
