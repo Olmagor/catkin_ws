@@ -186,15 +186,30 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 int main(int argc, char **argv)
 {
-
-	int saturation = 2000;
+	int MaxThrottlePwm = 2000;	//Added by Pascal, 2000 is the max pwm signal for the motor
 	int freq = 100;
 	Kp_m = 0;
 	Ki_m = 0;
 	Kd_m = 0;
 
 	ROS_INFO("number of argc %d", argc);
+	
+	//case with the 5 or 6 arguments: frequency, MaxThrottlePwm, Kp, Ki, Kd and -log 
+	if(atoi(argv[1]) > 0 )
+		freq = atoi(argv[1]);
+	else
+	{
+		ROS_INFO("Frequency must be more than 0");
+		return 0;
+	}
 
+	if( 0 < atoi(argv[2]) < 2000) atoi(argv[2]) = MaxThrottlePwm;
+
+	Kp_m = atof(argv[3]);
+	Ki_m = atof(argv[4]);
+	Kd_m = atof(argv[5]);
+	
+	/*			added by Pascal, no need of this control loop, already controlled in the .bash file
 	if(argc == 1)
 	{
 		//case with default params
@@ -248,9 +263,9 @@ int main(int argc, char **argv)
 		ROS_INFO("not enough arguments ! Specify throttle saturation.");
 		return 0;
 	}
+	*/
 
-	ROS_INFO("frequency %d, and saturation  : %d", freq, saturation);
-
+	ROS_INFO("frequency %d, and MaxThrottlePwm  : %d", freq, MaxThrottlePwm);
 
  	/***********************/
 	/* Initialize The Node */
@@ -293,10 +308,10 @@ int main(int argc, char **argv)
 	/* Initialize the RC input, and PWM output */
 	/*******************************************/
 
-	RCInput rcin;		//Eric renamed the class created by the RCinput library
+	RCInput rcin;		//added by Pascal, Eric renamed the class created by the RCinput library
 	rcin.init();
-	PWM servo;
-	PWM motor;
+	PWM servo;		//added by Pascal, Eric renamed the class created by the PWM library
+	PWM motor;		//added by Pascal, same thing as above but to keep thing clear with another name
 
 	if (!motor.init(MOTOR_PWM_OUT)) {
 		fprintf(stderr, "Motor Output Enable not set. Are you root?\n");
@@ -308,16 +323,16 @@ int main(int argc, char **argv)
 		return 0;
     	}
 
-	motor.enable(MOTOR_PWM_OUT);
-	servo.enable(SERVO_PWM_OUT);
+	motor.enable(MOTOR_PWM_OUT);		//added by Pascal, turn on pins for motor on the Navio to create a pwm signal
+	servo.enable(SERVO_PWM_OUT);		//added by Pascal, turn on pins for servo on the Navio to create a pwm signal
 
-	motor.set_period(MOTOR_PWM_OUT, 50); //frequency 50Hz for PWM
+	motor.set_period(MOTOR_PWM_OUT, 50); 	//added by Pascal, set the frequency (50Hz) of the pwm for each channel
 	servo.set_period(SERVO_PWM_OUT, 50);
 
 	int motor_input = 0;
 	int servo_input = 0;
 
-	sensor_msgs::Temperature rem_msg; //use of Temperature type messages. Because 2 floats
+	sensor_msgs::Temperature rem_msg; 	//use of Temperature type messages. Because 2 floats
 	sensor_msgs::Temperature ctrl_msg;
 
 	float desired_roll = 0;
@@ -343,18 +358,16 @@ int main(int argc, char **argv)
 		/*******************************************/
 
 		//read desired roll angle with remote ( 1250 to 1750 ) to range limited by defines
-		desired_roll = -((float)rcin.read(2)-1500.0f)*max_roll_angle/250.0f;
+		desired_roll = -((float)rcin.read(2)-1500.0f)*max_roll_angle/250.0f;  //Added by Pascal, weighted average in respect to the max angle
 
 		/*******************************************/
 		/*             VELOCITY SECTION            */
 		/*******************************************/
 
-		//Get Desired PWM Speed using Throttle saturation, saturation being the max value of pwm
-		int desired_pwm = 0;
-		float pwm_RC = (float)rcin.read(3);
-		if(rcin.read(3) > 1500)
-			desired_pwm = ((float)rcin.read(3)-1500.0f)*((float)saturation - 1500.0f)/500.0f + 1500.0f;
-		else desired_pwm = rcin.read(3);
+		//Get Desired PWM Speed using MaxThrottlePwm being the max value of pwm for the throttle
+		int desired_pwm = rcin.read(3);
+		if(desired_pwm > 1500)		//only needed if MaxThrottlePwm is below 2000
+			desired_pwm = (desired_pwm -1500.0)*(MaxThrottlePwm - 1500.0)/500.0 + 1500.0;
 			
 		//if(rcin.read(3) >= saturation)
 		//	desired_pwm = saturation;
@@ -388,7 +401,7 @@ int main(int argc, char **argv)
 		servo_input = pid_Servo_Output(pid_Ref_Output(desired_roll));
 
 		//write readings on pwm output
-		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);	// ..(pins, value of PWM)
+		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);//Added by Pascal, set the pwm signal: (pins, value of PWM in ms)
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
 
 		//Measure time for initial roll calibration
@@ -421,7 +434,6 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 
 	}
-
 
   	return 0;
 }
