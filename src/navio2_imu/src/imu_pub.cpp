@@ -39,7 +39,7 @@ float mindt = 0.01;
 unsigned long previoustime, currenttime;
 float dtsumm = 0;
 int isFirst = 1;
-int i = 0;			//added by Pascal, for sequenced display
+int temp = 0;			//added by Pascal, for sequenced display
 int freq = 100;
 
 //============================= Initial setup =================================
@@ -218,11 +218,11 @@ void update_imu_msg(sensor_msgs::Imu* imu_msg, InertialSensor* imu)
 	imu_msg->linear_acceleration.y = ay*G_SI;
 	imu_msg->linear_acceleration.z = az*G_SI;
 	
-	i++;
-	if(i==10)
+	temp++;
+	if(temp==10)
 	{
 		printf("Attitude: [Roll:%+05.2f]  [Pitch:%+05.2f]  [Yaw:%+05.2f] \n [Period:%.4fs]  [Rate:%dHz] \n \n", roll, pitch, yaw, dt, int(1/dt));
-		i=0;
+		temp=0;
 	}
 }
 
