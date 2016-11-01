@@ -175,7 +175,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 	//current roll angle
 	currentRoll = imu_msg.orientation.x;
-	ROS_INFO("Time %d", the_time);
+	//ROS_INFO("Time %d", the_time);			//Muted by Pascal
 
 	//keep calibration after 15 seconds
 	if(the_time < 15) RollOffset = currentRoll;
@@ -385,6 +385,7 @@ int main(int argc, char **argv)
 		{
 			ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
 			ROS_INFO("New Roll %f", currentRoll);
+			ROS_INFO("Time %d", the_time);
 			i=0;
 		}
 
