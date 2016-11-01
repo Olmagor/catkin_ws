@@ -155,7 +155,7 @@ int pid_Motor_Output(int desired_speed) // desired speed in m/s
 	//old anti wind-up (saturation)
 	if(Kierr_m > MAX_IERR_MOTOR) Kierr_m = MAX_IERR_MOTOR;
 	if(Kierr_m < -MAX_IERR_MOTOR) Kierr_m = -MAX_IERR_MOTOR;
-
+ 
 	//PID CONTROLLER
 	float controlSignal = Kp_m*err_m + Kierr_m + Kd_m*derr_m; // should be between 0 and 20.6m/s (3900*8.4*0.4*0.24*2*pi/60*62.5*10-3)
 
@@ -181,7 +181,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	if(the_time < 15) RollOffset = currentRoll;
 
 	currentRoll -= RollOffset;
-	ROS_INFO("New Roll %f", currentRoll);
+	//ROS_INFO("New Roll %f", currentRoll);	//Muted by Pascal
 }
 
 int main(int argc, char **argv)
@@ -384,6 +384,7 @@ int main(int argc, char **argv)
 		if(i == 50)
 		{
 			ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
+			ROS_INFO("New Roll %f", currentRoll);
 			i=0;
 		}
 
