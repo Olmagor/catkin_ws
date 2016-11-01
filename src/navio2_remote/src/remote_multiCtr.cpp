@@ -381,7 +381,7 @@ int main(int argc, char **argv)
 		if(desired_speed < 0) desired_speed = 0.0f;
 		
 		i++;
-		if(i == 100)
+		if(i == 50)
 		{
 			ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
 			i=0;
