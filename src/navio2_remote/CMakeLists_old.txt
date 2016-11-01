@@ -1,6 +1,12 @@
 
 # added by Pascal, i can be added in CMakeList.txt where indicated if one wants to use the old programs
 
+add_executable(remote_pub_sub src/remote_pub_sub.cpp)
+target_link_libraries(remote_pub_sub ${catkin_LIBRARIES})
+target_link_libraries(remote_pub_sub rcinput)
+target_link_libraries(remote_pub_sub pwm)
+target_link_libraries(remote_pub_sub util)
+
 add_executable(remote_pub_sub_sat src/remote_pub_sub_sat.cpp)
 target_link_libraries(remote_pub_sub_sat ${catkin_LIBRARIES})
 target_link_libraries(remote_pub_sub_sat rcinput)
