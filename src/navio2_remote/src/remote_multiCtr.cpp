@@ -186,6 +186,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 int main(int argc, char **argv)
 {
+	int i = 0;			//Added by Pascal, increment for the display of info
 	int MaxThrottlePwm = 2000;	//Added by Pascal, 2000 is the max pwm signal for the motor
 	int freq = 100;
 	Kp_m = 0;
@@ -379,7 +380,12 @@ int main(int argc, char **argv)
 		desired_speed = MAX_IERR_MOTOR*((float)desired_pwm-1500)/(500.0f);
 		if(desired_speed < 0) desired_speed = 0.0f;
 		
-		ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
+		i++;
+		if(i == 100)
+		{
+			ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
+			i=0;
+		}
 
 		//Read current Speed in m/s
 		dtf = rcin.read(5)-1000;
