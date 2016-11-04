@@ -383,6 +383,7 @@ int main(int argc, char **argv)
 		i++;
 		if(i == 25)
 		{
+			ROS_INFO("Pwm from remote controller: Steering %i, Throttle %i", rcin.read(2), rcin.read(3));
 			ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
 			ROS_INFO("New Roll %f", currentRoll);
 			ROS_INFO("Time %d", the_time);
