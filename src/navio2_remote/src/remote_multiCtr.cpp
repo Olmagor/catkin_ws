@@ -372,7 +372,7 @@ int main(int argc, char **argv)
 		/*             ROLL SECTION                */
 		/*******************************************/
 		
-		pilot_input = rcin.read(2);
+		pilot_input = rcin.read(2)*2/1.75;
 		//read desired roll angle with remote ( 1250 to 1750 ) to range limited by defines
 		desired_roll = -((float)rcin.read(2)-1500.0f)*max_roll_angle/250.0f;  //Added by Pascal, weighted average in respect to the max angle
 
