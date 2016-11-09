@@ -9,10 +9,9 @@
 #include <sstream>
 
 //PWM Pins on Navio2
-#define PILOT_PIN 4
 #define MOTOR_PWM_OUT 9
-#define SERVO_PWM_OUT 3			//changed by Pascal
-
+#define SERVO_PWM_OUT 6			//changed by Pascal
+#define PILOT_PIN 3
 
 //Maximum Integration angle
 #define MAX_IERR1 4
