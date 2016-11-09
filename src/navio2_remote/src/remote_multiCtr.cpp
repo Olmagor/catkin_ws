@@ -186,7 +186,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 }
 
 int main(int argc, char **argv)
-{
+{	
 	int i = 0;			//Added by Pascal, increment for the display of info
 	int MaxThrottlePwm = 2000;	//Added by Pascal, 2000 is the max pwm signal for the motor
 	int freq = 100;
@@ -336,12 +336,14 @@ int main(int argc, char **argv)
 	
 	int motor_input = 0;
 	int servo_input = 0;
+	int pilot_input = 0;
 
 	sensor_msgs::Temperature rem_msg; 	//use of Temperature type messages. Because 2 floats
 	sensor_msgs::Temperature ctrl_msg;
 
 	float desired_roll = 0;
 	float desired_speed = 0;
+	int desired_pwm = 0;
 
 	//speed in m/s
 	float speed = 0;
@@ -361,7 +363,8 @@ int main(int argc, char **argv)
 		/*******************************************/
 		/*             ROLL SECTION                */
 		/*******************************************/
-
+		
+		pilot_input = rcin.read(2);
 		//read desired roll angle with remote ( 1250 to 1750 ) to range limited by defines
 		desired_roll = -((float)rcin.read(2)-1500.0f)*max_roll_angle/250.0f;  //Added by Pascal, weighted average in respect to the max angle
 
@@ -371,7 +374,7 @@ int main(int argc, char **argv)
 
 		//Get Desired PWM Speed using MaxThrottlePwm being the max value of pwm for the throttle
 		
-		int desired_pwm = rcin.read(3);
+		desired_pwm = rcin.read(3);
 		if(desired_pwm > 1500)		//only needed if MaxThrottlePwm is below 2000
 			desired_pwm = (desired_pwm -1500.0)*(MaxThrottlePwm - 1500.0)/500.0 + 1500.0;
 			
@@ -388,7 +391,7 @@ int main(int argc, char **argv)
 		if(i == 25)
 		{
 			ROS_INFO("Pwm from remote controller: Steering %i, Throttle %i", rcin.read(2), rcin.read(3));
-			ROS_INFO("Desired_pwm %i and Desired Speed %f", desired_pwm, desired_speed); //added by Pascal, to test
+			ROS_INFO("Desired Pwm %i, Desired Speed %f and Desired Roll %f", desired_pwm, desired_speed, desired_roll); //added by Pascal, to test
 			ROS_INFO("New Roll %f", currentRoll);
 			ROS_INFO("Time %d", the_time);
 			i=0;
@@ -417,7 +420,7 @@ int main(int argc, char **argv)
 		//write readings on pwm output
 		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);	//Added by Pascal, set the pwm signal: (pins, value of PWM in microsecondes)
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
-		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)rcin.read(2))/1000.0f);
+		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
 
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
