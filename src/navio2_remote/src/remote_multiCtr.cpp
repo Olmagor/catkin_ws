@@ -9,9 +9,10 @@
 #include <sstream>
 
 //PWM Pins on Navio2
+#define PILOT_PIN 4
 #define MOTOR_PWM_OUT 9
 #define SERVO_PWM_OUT 3			//changed by Pascal
-#define PILOT_PWM_OUT 4
+
 
 //Maximum Integration angle
 #define MAX_IERR1 4
@@ -327,7 +328,7 @@ int main(int argc, char **argv)
     	}
 	
 	
-	if (!pilot.init(SERVO_PWM_OUT)) {
+	if (!pilot.init(PILOT_PIN)) {
 		fprintf(stderr, "Pilot Output Enable not set. Are you root?\n");
 		return 0;
     	}
@@ -336,11 +337,11 @@ int main(int argc, char **argv)
 	
 	motor.enable(MOTOR_PWM_OUT);		//added by Pascal, turn on pins for motor on the Navio to create a pwm signal
 	servo.enable(SERVO_PWM_OUT);		//added by Pascal, turn on pins for servo on the Navio to create a pwm signal
-	pilot.enable(PILOT_PWM_OUT);		//added by Pascal, turn on pins for piloz on the Navio to create a pwm signal
+	pilot.enable(PILOT_PIN);		//added by Pascal, turn on pins for piloz on the Navio to create a pwm signal
 	
 	motor.set_period(MOTOR_PWM_OUT, 50); 	//added by Pascal, set the frequency (50Hz) of the pwm for each channel
 	servo.set_period(SERVO_PWM_OUT, 50);
-	pilot.set_period(PILOT_PWM_OUT, 50);
+	pilot.set_period(PILOT_PIN, 50);
 	
 	int motor_input = 0;
 	int servo_input = 0;
@@ -429,7 +430,7 @@ int main(int argc, char **argv)
 		//write readings on pwm output
 		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);	//Added by Pascal, set the pwm signal: (pins, value of PWM in nanosecondes)
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
-		// pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)servo_input)/1000.0f);		//
+		// pilot.set_duty_cycle(PILOT_PIN, ((float)servo_input)/1000.0f);		//
 
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
