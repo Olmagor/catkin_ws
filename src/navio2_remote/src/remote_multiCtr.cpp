@@ -11,7 +11,7 @@
 //PWM Pins on Navio2
 #define MOTOR_PWM_OUT 9
 #define SERVO_PWM_OUT 6			//changed by Pascal
-#define PILOT_PWM_OUT 12
+#define PILOT_PWM_OUT 11
 
 //Maximum Integration angle
 #define MAX_IERR1 4
@@ -392,6 +392,7 @@ int main(int argc, char **argv)
 		{
 			ROS_INFO("Pwm from remote controller: Steering %i, Throttle %i", rcin.read(2), rcin.read(3));
 			ROS_INFO("Desired Pwm %i, Desired Speed %f and Desired Roll %f", desired_pwm, desired_speed, desired_roll); //added by Pascal, to test
+			ROS_INFO("Motor input &i and Servo input %i and Pilot inuput %i", motor_input, servo_input, pilot_input);
 			ROS_INFO("New Roll %f", currentRoll);
 			ROS_INFO("Time %d", the_time);
 			i=0;
@@ -418,9 +419,9 @@ int main(int argc, char **argv)
 		servo_input = pid_Servo_Output(pid_Ref_Output(desired_roll));
 
 		//write readings on pwm output
-		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);	//Added by Pascal, set the pwm signal: (pins, value of PWM in microsecondes)
+		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);	//Added by Pascal, set the pwm signal: (pins, value of PWM in nanosecondes)
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
-		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
+		pilot.set_duty_cycle(PILOT_PWM_OUT, 2);		//((float)pilot_input)/1000.0f
 
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
