@@ -429,7 +429,7 @@ int main(int argc, char **argv)
 		//write readings on pwm output
 		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f);	//Added by Pascal, set the pwm signal: (pins, value of PWM in nanosecondes)
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
-		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);		//
+		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)servo_input)/1000.0f);		//
 
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
