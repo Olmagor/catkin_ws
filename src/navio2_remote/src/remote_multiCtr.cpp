@@ -10,14 +10,14 @@
 
 //PWM Pins on Navio2
 #define MOTOR_PWM_OUT 9
-#define SERVO_PWM_OUT 6			//changed by Pascal
-#define PILOT_PIN 3
+#define SERVO_PWM_OUT 6			
+#define PILOT_PIN 3			//added by Pascal
 
 //Maximum Integration angle
 #define MAX_IERR1 4
 #define MAX_IERR2 5
 #define PI 3.14159
-#define SERVO_TRIM 1440.0f
+#define SERVO_TRIM 1440.0f		//Pascal: number estimated by eric to ensure that the steering servo is pointing in the straight direction at idle
 
 // PID for roll angle
 #define Kp1 0.3f
@@ -30,7 +30,7 @@ float Ki2[3] = {2.23f, 5.89f, 5.83f};
 float Kd2[3] = {0, 0.0465f, 0.0195f};
 
 //full range of motor
-#define MAX_IERR_MOTOR 20.6 // old value 20.6
+#define MAX_IERR_MOTOR 20.6 			//Pascal: value calculated by Eric that converts mA->rpm->m/s for the motor
 
 float max_roll_angle = 30.0f;
 
@@ -310,11 +310,11 @@ int main(int argc, char **argv)
 	/* Initialize the RC input, and PWM output */
 	/*******************************************/
 
-	RCInput rcin;		//added by Pascal, Eric renamed the class created by the RCinput library
+	RCInput rcin;		//Pascal: Eric renamed the class created by the RCinput library
 	rcin.init();
-	PWM servo;		//added by Pascal, Eric renamed the class created by the PWM library
-	PWM motor;		//added by Pascal, same thing as above but to keep thing clear with another name
-	PWM pilot;
+	PWM servo;		//Pascal: Eric renamed the class created by the PWM library
+	PWM motor;		//Pascal: same thing as above but to keep thing clear with another name
+	PWM pilot;		//added by Pascal
 
 	if (!motor.init(MOTOR_PWM_OUT)) {
 		fprintf(stderr, "Motor Output Enable not set. Are you root?\n");
@@ -334,13 +334,13 @@ int main(int argc, char **argv)
 
 	
 	
-	motor.enable(MOTOR_PWM_OUT);		//added by Pascal, turn on pins for motor on the Navio to create a pwm signal
-	servo.enable(SERVO_PWM_OUT);		//added by Pascal, turn on pins for servo on the Navio to create a pwm signal
-	pilot.enable(PILOT_PIN);		//added by Pascal, turn on pins for piloz on the Navio to create a pwm signal
+	motor.enable(MOTOR_PWM_OUT);		//Pascal: turn on pins for motor on the Navio to create a pwm signal
+	servo.enable(SERVO_PWM_OUT);		//Pascal: turn on pins for servo on the Navio to create a pwm signal
+	pilot.enable(PILOT_PIN);		//added by Pascal, turn on pins for pilot on the Navio to create a pwm signal
 	
-	motor.set_period(MOTOR_PWM_OUT, 50); 	//added by Pascal, set the frequency (50Hz) of the pwm for each channel
+	motor.set_period(MOTOR_PWM_OUT, 50); 	//Pascal: set the frequency (50Hz) of the pwm for each channel
 	servo.set_period(SERVO_PWM_OUT, 50);
-	pilot.set_period(PILOT_PIN, 50);
+	pilot.set_period(PILOT_PIN, 50);	//added by Pascal
 	
 	int motor_input = 0;
 	int servo_input = 0;
@@ -374,7 +374,7 @@ int main(int argc, char **argv)
 
 		pilot_input = rcin.read(2);
 		//read desired roll angle with remote ( 1250 to 1750 ) to range limited by defines
-		desired_roll = -((float)rcin.read(2)-1500.0f)*max_roll_angle/250.0f;  //Added by Pascal, weighted average in respect to the max angle
+		desired_roll = -((float)rcin.read(2)-1500.0f)*max_roll_angle/250.0f;  //Pascal: weighted average in respect to the max angle
 
 		/*******************************************/
 		/*             VELOCITY SECTION            */
@@ -392,14 +392,14 @@ int main(int argc, char **argv)
 		//	desired_pwm = rcin.read(3);
 
 		//get derired speed in m/s using desired pwm
-		desired_speed = MAX_IERR_MOTOR*((float)desired_pwm-1500)/(500.0f);
-		if(desired_speed < 0) desired_speed = 0.0f;
+		desired_speed = MAX_IERR_MOTOR*((float)desired_pwm-1500)/(500.0f);	//Pascal: added by Eric to try to control in speed in a close loop by using the real speed (m/s) as parameter
+		if(desired_speed < 0) desired_speed = 0.0f;				//Pascal:not used, only for the -log
 		
 		i++;
-		if(i == 25)
+		if(i == 25)		//added by Pascal, to get insgiht on the code and what is happening
 		{
 			ROS_INFO("Pwm from remote controller: Steering %i, Throttle %i", rcin.read(2), rcin.read(3));
-			ROS_INFO("Desired Pwm %i, Desired Speed %f and Desired Roll %f", desired_pwm, desired_speed, desired_roll); //added by Pascal, to test
+			ROS_INFO("Desired Pwm %i and Desired Roll %f", desired_pwm, desired_roll);
 			ROS_INFO("Motor input %i and Servo input %i and Pilot inuput %i", motor_input, servo_input, pilot_input);
 			ROS_INFO("New Roll %f", currentRoll);
 			ROS_INFO("Time %d", the_time);
