@@ -17,7 +17,7 @@
 #define MAX_IERR1 4
 #define MAX_IERR2 5
 #define PI 3.14159
-#define SERVO_TRIM 1440.0f		//Pascal: number estimated by eric to ensure that the steering servo is pointing in the straight direction at idle
+#define SERVO_TRIM 1430.0f		//old value=1440, Pascal: number estimated by eric to ensure that the steering servo is pointing in the straight direction at idle
 
 // PID for roll angle
 #define Kp1 0.3f
