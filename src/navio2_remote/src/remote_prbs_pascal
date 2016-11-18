@@ -10,7 +10,7 @@
 #include <sstream>
 
 #define MOTOR_PWM_OUT 9
-#define SERVO_PWM_OUT 0
+#define PILOT_PWM_OUT 0
 #define PRBS_FREQ 25 //frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1 
 
 #define PI 3.14159
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 {
 	ROS_INFO("Start");
 	int saturation = 2000;
-	int prbs_val = 0; //default prbs signal
+	int prbs_val = 0; 		//default prbs signal
 	int freq = 100;
 
 	ROS_INFO("number of argc %d", argc);
@@ -71,16 +71,16 @@ int main(int argc, char **argv)
 		return 0;
     	}
 
-	if (!servo.init(SERVO_PWM_OUT)) {
+	if (!servo.init(PILOT_PWM_OUT)) {
 		fprintf(stderr, "Servo Output Enable not set. Are you root?\n");
 		return 0;
     	}
 
 	motor.enable(MOTOR_PWM_OUT);
-	servo.enable(SERVO_PWM_OUT);
+	servo.enable(PILOT_PWM_OUT);
 
 	motor.set_period(MOTOR_PWM_OUT, 50); //frequency 50Hz
-	servo.set_period(SERVO_PWM_OUT, 50); 
+	servo.set_period(PILOT_PWM_OUT, 50); 
 
 	int motor_input = 0;
 	int servo_input = 0;
@@ -135,14 +135,14 @@ int main(int argc, char **argv)
 		
 		//write readings on pwm output
 		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f); 
-		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
+		servo.set_duty_cycle(PILOT_PWM_OUT, ((float)servo_input)/1000.0f);
 		
 		//save values into msg container for the remote readings
 		rem_msg.header.stamp = ros::Time::now();
 		rem_msg.temperature = motor_input;
 		rem_msg.variance = servo_input;
 
-		dtf = rcin.read(4)-1000;
+		dtf = rcin.read(4)-1000;				//Pascal: signal from the hall sensor
 		speed = 4.0f*PI*R*1000.0f/((float)dtf);
 		if(speed < 0 || dtf < 40) speed = 0;
 
