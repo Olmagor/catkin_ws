@@ -135,8 +135,14 @@ target_link_libraries(remote_multiCtr rcinput)
 target_link_libraries(remote_multiCtr pwm)
 target_link_libraries(remote_multiCtr util)
 
+add_executable(remote_prbs_pascal src/remote_prbs_pascal.cpp)
+target_link_libraries(remote_multiCtr ${catkin_LIBRARIES})
+target_link_libraries(remote_multiCtr rcinput)
+target_link_libraries(remote_multiCtr pwm)
+target_link_libraries(remote_multiCtr util)
+
 # added by Pascal, i took away all the old scripts that used to be build but are no more useful i.e. all scritps
-# added by Pascal, to undo copy and paster to content of CMakeLists_old.txt
+# added by Pascal, to undo : copy and paste the content of CMakeLists_old.txt here
 
 #target_link_libraries(remote_pub_sub_sat_8_shape rgbled)
 
