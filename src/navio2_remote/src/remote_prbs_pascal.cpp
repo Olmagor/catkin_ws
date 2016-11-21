@@ -1,5 +1,3 @@
-// New Version 12/05/2016 with transmission of the Speed into a new topic
-
 #include "RCInput.h"
 #include "PWM.h"
 #include "Util.h"
@@ -10,9 +8,10 @@
 #include <sstream>
 
 #define MOTOR_PWM_OUT 9
-#define MOTOR_PWM_OUT 9
+#define SERVO_PWM_OUT 6
 #define PILOT_PWM_OUT 3
-#define PRBS_FREQ 25 //frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1 
+#define PRBS_FREQ 25 //frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1
+#define SERVO_TRIM 1430.0f		//can be used to trim the steering if not done on the remote controller
 
 #define PI 3.14159
 
@@ -72,19 +71,29 @@ int main(int argc, char **argv)
 		return 0;
     	}
 
-	if (!servo.init(PILOT_PWM_OUT)) {
+	if (!pilot.init(PILOT_PWM_OUT)) {
+		fprintf(stderr, "Pilot Output Enable not set. Are you root?\n");
+		return 0;
+    	}
+	
+	if (!servo.init(SERVO_PWM_OUT)) {
 		fprintf(stderr, "Servo Output Enable not set. Are you root?\n");
 		return 0;
     	}
 
 	motor.enable(MOTOR_PWM_OUT);
-	servo.enable(PILOT_PWM_OUT);
+	pilot.enable(PILOT_PWM_OUT);
+	servo.enable(SERVO_PWM_OUT);
 
 	motor.set_period(MOTOR_PWM_OUT, 50); //frequency 50Hz
-	servo.set_period(PILOT_PWM_OUT, 50); 
+	pilot.set_period(PILOT_PWM_OUT, 50);
+	servo.set_period(SERVO_PWM_OUT, 50); 
 
 	int motor_input = 0;
+	int pilot_input = 0;
 	int servo_input = 0;
+	
+	int servo_input_0 = rcin.read(2);
 
 	sensor_msgs::Temperature rem_msg;
 	sensor_msgs::Temperature ctrl_msg;
@@ -93,9 +102,9 @@ int main(int argc, char **argv)
 	int start_state = 0x7D0;
 	int lfsr = start_state;
 
-	int steer_low = 1500 - prbs_val;
-	int steer_high= 1500 + prbs_val;
-	int steer_prbs = steer_low;
+	int prbs_low = 1500 - prbs_val;
+	int prbs_high= 1500 + prbs_val;
+	int pilot_prbs = prbs_low;
 
 	//speed in m/s
 	float speed = 0;
@@ -114,34 +123,36 @@ int main(int argc, char **argv)
 		else
 			motor_input = rcin.read(3);
 
-		//servo control with prbs
-		servo_input = rcin.read(2);
+		//pilot control with prbs
 		if(!ctr)
 		{
 			int bit = ((lfsr >> 0) ^ (lfsr >> 2)) & 1;
 			lfsr = (lfsr >> 1) | (bit << 8); //was bit << 10 before
 
 			if (bit == 1)
-				steer_prbs = steer_high;
+				pilot_prbs = prbs_high;
 			else if (bit == 0)
-				steer_prbs = steer_low;
-			else
-				steer_prbs = servo_input;
+				pilot_prbs; = prbs_low;
 		}
 		ctr++;
-		if (servo_input > steer_high || servo_input < steer_low)		// if the RC signal is bigger than steer_high give the control back
-			servo_input = servo_input;
-		else
-			servo_input = steer_prbs;
+		pilot_input = pilot_prbs;
+		
+		//Servo steering
+		servo_input = rcin.read(2);		
+		
+		// In case user has to make a curve to avoid an obstacle
+		if (servo_input > servo_input_0 + 50 || servo_input < servo_input_0 - 50)		
+			pilot_input = 1500;
 		
 		//write readings on pwm output
 		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f); 
-		servo.set_duty_cycle(PILOT_PWM_OUT, ((float)servo_input)/1000.0f);
+		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
+		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
 		
 		//save values into msg container for the remote readings
 		rem_msg.header.stamp = ros::Time::now();
 		rem_msg.temperature = motor_input;
-		rem_msg.variance = servo_input;
+		rem_msg.variance = pilot_input;
 
 		dtf = rcin.read(4)-1000;				//Pascal: signal from the hall sensor
 		speed = 4.0f*PI*R*1000.0f/((float)dtf);
