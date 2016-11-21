@@ -49,7 +49,7 @@ elif [ "$#" -eq 4 ] && [ "$4" == '-log' ]          #to active the writing of the
       tmux send-keys "rosbag record -a" C-m
 else
     echo "Usage :   ./rosCustom.bash [prbs] [freq] [MaxThrottlePwm] [-log], -log is not necessary" #MaxThrottlePwm is limited to 2000 in the cpp
-    echo "[prbs] must be a value between 0 à 500, [freq] must be a positive value usually 50Hz"
+    echo "[prbs] can be a value between 0 à 500 but best between 0 à 50, [freq] must be a positive value usually 50Hz"
     exit 0
 fi
 
