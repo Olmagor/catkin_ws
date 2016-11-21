@@ -7,8 +7,6 @@
 #include "sensor_msgs/Temperature.h"
 #include <sstream>
 
-	//just ajouter qqch au bol parce que j'arroe plus a pull depuis le raspberry
-
 #define MOTOR_PWM_OUT 9
 #define SERVO_PWM_OUT 6
 #define PILOT_PWM_OUT 3
@@ -175,9 +173,10 @@ int main(int argc, char **argv)
 		//debug info
 		//ROS_INFO("Thrust usec = %d    ---   Steering usec = %d", motor_input, servo_input);
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
-		printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
+		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
-
+		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d and Speed: %f", motor_input, pilot_input, servo_input, speed_filt);
+		
 		// publish the messages
 		remote_pub.publish(rem_msg);
 		control_pub.publish(ctrl_msg);
