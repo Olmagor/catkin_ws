@@ -65,6 +65,7 @@ int main(int argc, char **argv)
 	rcin.init();
 	PWM servo;
 	PWM motor;
+	PWM pilot;
 
 	if (!motor.init(MOTOR_PWM_OUT)) {
 		fprintf(stderr, "Motor Output Enable not set. Are you root?\n");
@@ -172,7 +173,7 @@ int main(int argc, char **argv)
 		//debug info
 		//ROS_INFO("Thrust usec = %d    ---   Steering usec = %d", motor_input, servo_input);
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
-		printf("[Thrust:%d] - [Steering:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, servo_input, dtf, speed_filt);
+		printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
 
 		// publish the messages
