@@ -10,7 +10,7 @@
 #define MOTOR_PWM_OUT 9
 #define SERVO_PWM_OUT 6
 #define PILOT_PWM_OUT 3
-#define PRBS_FREQ 25 //frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1
+#define PRBS_FREQ 25 			//frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1
 #define SERVO_TRIM 1430.0f		//can be used to trim the steering if not done on the remote controller
 
 #define PI 3.14159
@@ -50,13 +50,12 @@ int main(int argc, char **argv)
 	/***********************/
 	ros::init(argc, argv, "remote_reading_handler");
 	ros::NodeHandle n;
-
 	ros::Publisher remote_pub = n.advertise<sensor_msgs::Temperature>("remote_readings", 1000);
 	ros::Publisher control_pub = n.advertise<sensor_msgs::Temperature>("control_readings", 1000);
 	
 	//running rate = freq Hz
 	ros::Rate loop_rate(freq);
-
+	
 	/*******************************************/
 	/* Initialize the RC input, and PWM output */
 	/*******************************************/
@@ -142,7 +141,7 @@ int main(int argc, char **argv)
 		servo_input = rcin.read(2);		
 		
 		// In case user has to make a curve to avoid an obstacle
-		if (servo_input > servo_input_0 + 50 || servo_input < servo_input_0 - 50)		
+		if (servo_input > 1500 + 50 || servo_input < 1500 - 50)		
 			pilot_input = 1500;
 		
 		//write readings on pwm output
@@ -158,25 +157,23 @@ int main(int argc, char **argv)
 		dtf = rcin.read(4)-1000;				//Pascal: signal from the hall sensor
 		speed = 4.0f*PI*R*1000.0f/((float)dtf);
 		if(speed < 0 || dtf < 40) speed = 0;
-
 		
 		// low pass filtering of the speed with tau = 0.1
 		float alpha = 0.01f/(0.01f+0.1f);
 		speed_filt = alpha*speed + (1.0f-alpha)*speed_filt;
-
-		//save values into msg container for the control readings
-
-		ctrl_msg.header.stamp = ros::Time::now();
-		ctrl_msg.temperature = speed;//_filt;
-		ctrl_msg.variance = 0;//here it's supposed to be the control output
-
+		
 		//debug info
 		//ROS_INFO("Thrust usec = %d    ---   Steering usec = %d", motor_input, servo_input);
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
 		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
 		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d and Speed: %f", motor_input, pilot_input, servo_input, speed_filt);
-		
+
+		//save values into msg container for the control readings
+		ctrl_msg.header.stamp = ros::Time::now();
+		ctrl_msg.temperature = speed;//_filt;
+		ctrl_msg.variance = 0;//here it's supposed to be the control output
+
 		// publish the messages
 		remote_pub.publish(rem_msg);
 		control_pub.publish(ctrl_msg);
