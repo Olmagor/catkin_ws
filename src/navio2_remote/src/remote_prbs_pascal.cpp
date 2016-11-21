@@ -7,6 +7,8 @@
 #include "sensor_msgs/Temperature.h"
 #include <sstream>
 
+	//just ajouter qqch au bol parce que j'arroe plus a pull depuis le raspberry
+
 #define MOTOR_PWM_OUT 9
 #define SERVO_PWM_OUT 6
 #define PILOT_PWM_OUT 3
