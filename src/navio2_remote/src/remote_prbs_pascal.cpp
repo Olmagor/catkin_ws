@@ -10,7 +10,8 @@
 #include <sstream>
 
 #define MOTOR_PWM_OUT 9
-#define PILOT_PWM_OUT 0
+#define MOTOR_PWM_OUT 9
+#define PILOT_PWM_OUT 3
 #define PRBS_FREQ 25 //frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1 
 
 #define PI 3.14159
@@ -128,7 +129,7 @@ int main(int argc, char **argv)
 				steer_prbs = servo_input;
 		}
 		ctr++;
-		if (servo_input > steer_high || servo_input < steer_low)
+		if (servo_input > steer_high || servo_input < steer_low)		// if the RC signal is bigger than steer_high give the control back
 			servo_input = servo_input;
 		else
 			servo_input = steer_prbs;
