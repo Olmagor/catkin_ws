@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 			if (bit == 1)
 				pilot_prbs = prbs_high;
 			else if (bit == 0)
-				pilot_prbs; = prbs_low;
+				pilot_prbs = prbs_low;
 		}
 		ctr++;
 		pilot_input = pilot_prbs;
