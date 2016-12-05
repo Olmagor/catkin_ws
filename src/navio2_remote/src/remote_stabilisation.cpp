@@ -9,6 +9,7 @@
 #include <sstream>
 
 #define PILOT_PWM_OUT 3
+#define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
 float currentRoll;
@@ -23,15 +24,22 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	previousTime = currentTime;
 	currentTime = imu_msg.header.stamp;
 
-	//current roll angle
-	currentRoll = imu_msg.orientation.x;
+	//current roll angle, positif value in clockwise
+	currentRoll = imu_msg.orientation.x;		
 	currentRollSpeed = imu.angular_velocity.x;
 }
 
 int main(int argc, char **argv)
 {
 	ROS_INFO("Beginning with stabilisation");
-
+	
+	/*******************************************/
+	/* Definie LQR parameter */
+	/*******************************************/
+	float K1=-64.1997;
+	float K2=-6.4701;
+	float u;
+	
  	/***********************/
 	/* Initialize The Node */
 	/***********************/
@@ -60,25 +68,18 @@ int main(int argc, char **argv)
     	}
 	
 	pilot.enable(PILOT_PWM_OUT);
-
 	pilot.set_period(PILOT_PWM_OUT, 50);    //frequency 50Hz
-
 	int pilot_input = 0;
 
 	sensor_msgs::Temperature rem_msg;
 	sensor_msgs::Temperature ctrl_msg;
 
-	//speed in m/s
-	float speed = 0;
-	float speed_filt = 0;
-	int dtf = 0;// dtf read from arduino. dtf = dt*4 in msec
-	float R = 0.0625f; //Rear Wheel Radius
-
-	int ctr = 0; //counter for the period divider 
 	while (ros::ok())
 	{
  
-	  // indication degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 0.1ms
+	  // indication degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
+		u = K1*currentRoll + K2*currentRollSpeed;	//rad, positif values of imu in clockwise
+		pilot_input = PILOT_TRIM + (u*180/PI)*10;			//rad->deg->amplitude pwm in ms
 		
 		//write readings on pwm output in miliseconds
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
