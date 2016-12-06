@@ -54,8 +54,7 @@ int main(int argc, char **argv)
 {	
 	//argc = 0;
 	//argv = 0;
-	ROS_INFO("Beginning with stabilisation");
-	int freq = 100;
+	int freq = 50;
 	
 	/*******************************************/
 	/* Definie LQR parameter */
@@ -63,6 +62,8 @@ int main(int argc, char **argv)
 	if(atoi(argv[1]) > 0 ) || atoi(argv[1]) < 10 ))
 	amplitude = atoi(argv[1]);
 	K1 = amplitude;
+	
+	ROS_INFO("Beginning with stabilisation with amplitude: %f", K1);
 	
  	/***********************/
 	/* Initialize The Node */
