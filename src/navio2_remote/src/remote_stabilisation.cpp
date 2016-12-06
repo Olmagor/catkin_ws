@@ -30,13 +30,13 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 	//current roll angle, positif value in clockwise
 	currentRoll = imu_msg.orientation.x;		
-	currentRollSpeed = 0; //imu_msg.angular_velocity.x;
+	currentRollSpeed = imu_msg.angular_velocity.x;
 }
 
 int main(int argc, char **argv)
 {	
-	argc = 0;
-	argv = 0;
+	//argc = 0;
+	//argv = 0;
 	ROS_INFO("Beginning with stabilisation");
 	
 	/*******************************************/
