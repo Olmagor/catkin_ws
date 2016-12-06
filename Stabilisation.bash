@@ -2,7 +2,7 @@
 SESSION=$USER
 
 #no log
-if [ "$#" -eq 0 ]
+if [ "$#" -eq 1 ]
 then
     echo "Here we go in STABILISATION MODE"
     sleep 2
@@ -21,8 +21,8 @@ then
     tmux send-keys "sleep 5" C-m
     tmux send-keys "sudo -i" C-m
     tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
-    tmux send-keys "rosrun navio2_remote remote_stabilisation" C-m
-elif [ "$#" -eq 1 ] && [ "$1" == '-log' ]          #to active the writing of the log files
+    tmux send-keys "rosrun navio2_remote remote_stabilisation $1" C-m
+elif [ "$#" -eq 1 ] && [ "$2" == '-log' ]          #to active the writing of the log files
   then
       echo "Here we go in STABILISATION MODE, WITH log files"
       sleep 2
@@ -41,7 +41,7 @@ elif [ "$#" -eq 1 ] && [ "$1" == '-log' ]          #to active the writing of the
       tmux send-keys "sleep 5" C-m
       tmux send-keys "sudo -i" C-m
       tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
-      tmux send-keys "rosrun navio2_remote remote_stabilisation" C-m
+      tmux send-keys "rosrun navio2_remote remote_stabilisation $1" C-m
       tmux split-window -v
       tmux send-keys "sleep 5" C-m                                       #no needs to start earlier because no calibration
       tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
