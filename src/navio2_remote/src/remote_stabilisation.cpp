@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 	/*******************************************/
 	/* Definie LQR parameter */
 	/*******************************************/
-	if(atoi(argv[1]) > 0 ) || atoi(argv[1]) < 10 ))
+	if(atoi(argv[1]) > 0  || atoi(argv[1]) < 10 )
 	amplitude = atoi(argv[1]);
 	K1 = amplitude;
 	
