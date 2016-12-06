@@ -13,7 +13,7 @@
 #define PI 3.14159
 
 float K1 = -64.1997;
-float K2 = -6.4701
+float K2 = -6.4701;
 float u = 0;
 
 float currentRoll;
@@ -33,8 +33,10 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	currentRollSpeed = imu.angular_velocity.x;
 }
 
-int main()//int argc, char **argv)
-{
+int main(int argc, char **argv)
+{	
+	argc = 0;
+	argv = 0;
 	ROS_INFO("Beginning with stabilisation");
 	
 	/*******************************************/
