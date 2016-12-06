@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	int lfsr = start_state;
 
 	int prbs_low = PILOT_TRIM - prbs_val;
-	int prbs_high= PILOT_TRIM + prbs_val;
+	int prbs_high = PILOT_TRIM + prbs_val;
 	int pilot_prbs = prbs_low;
 
 	//speed in m/s
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 		
 		// In case user has to make a curve to avoid an obstacle
 		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
-			pilot_input = 1500;
+			pilot_input = PILOT_TRIM;
 		
 		//write readings on pwm output
 		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f); 
