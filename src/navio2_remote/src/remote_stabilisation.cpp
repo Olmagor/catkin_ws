@@ -13,7 +13,7 @@
 #define PI 3.14159
 
 float K1 = 64.1997/10; //-64.1997;
-float K2 = -6.4701;
+float K2 = 1.908;
 float u = 0;
 
 float currentRoll;
