@@ -12,8 +12,8 @@
 #define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
-float K1 = -6.41997; //-64.1997;
-float K2 = -6.4701;
+float K1 = 64.1997/4; //-64.1997;
+float K2 = 6.4701;
 float u = 0;
 
 float currentRoll;
