@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 	
 	pilot.enable(PILOT_PWM_OUT);
 	pilot.set_period(PILOT_PWM_OUT, 50);    //frequency 50Hz
-	int pilot_input = 0;
+	float pilot_input = 0;
 
 	sensor_msgs::Temperature rem_msg;
 	sensor_msgs::Temperature ctrl_msg;
@@ -83,7 +83,8 @@ int main(int argc, char **argv)
  
 	  // indication degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
 		u = K1*currentRoll + K2*currentRollSpeed;	//rad, positif values of imu in clockwise
-		pilot_input = PILOT_TRIM + (u*180/PI)*10;			//rad->deg->amplitude pwm in ms
+		correction = (u*180/PI)*10;
+		pilot_input = PILOT_TRIM;			//rad->deg->amplitude pwm in ms
 		
 		//write readings on pwm output in miliseconds
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
@@ -93,7 +94,7 @@ int main(int argc, char **argv)
 		rem_msg.temperature = 0; // motor_input;
 		rem_msg.variance = pilot_input;
 		
-		ROS_INFO("Pilot: %d, Roll: %f, RollSpeed: %f and u: %f", pilot_input, currentRoll, currentRollSpeed);
+		ROS_INFO("Pilot: %f, Roll: %f, RollSpeed: %f and u: %f, correction %f", pilot_input, currentRoll, currentRollSpeed, correction);
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
