@@ -12,17 +12,20 @@
 #define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
-float K1 = -64.1997;
+float K1 = -6.41997; //-64.1997;
 float K2 = -6.4701;
 float u = 0;
 
 float currentRoll;
 ros::Time currentTime;
 ros::Time previousTime;
+float rollOffset;
 
 float currentRollSpeed;
+float speedOffset = -2.2;
 
 float correction;
+
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -33,6 +36,12 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	//current roll angle, positif value in clockwise
 	currentRoll = imu_msg.orientation.x;		
 	currentRollSpeed = imu_msg.angular_velocity.x;
+	
+	//keep calibration after 5 seconds
+	if(the_time < 5) rollOffset = currentRoll;
+
+	currentRoll -= rollOffset;
+	ROS_INFO("Hold still for 5 secondes: calibration %f", rollOffset);
 }
 
 int main(int argc, char **argv)
@@ -84,8 +93,8 @@ int main(int argc, char **argv)
 	{
  
 	  // indication degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
-		u = K1*currentRoll + K2*currentRollSpeed;	//rad, positif values of imu in clockwise
-		correction = (u*180/PI)*10;
+		u = K1*(currentRoll - rollOffset) + K2*(currentRollSpeed - speedOffset);	//degree, positif values of imu in clockwise
+		correction = u*10;
 		pilot_input = PILOT_TRIM;			//rad->deg->amplitude pwm in ms
 		
 		//write readings on pwm output in miliseconds
@@ -96,7 +105,7 @@ int main(int argc, char **argv)
 		rem_msg.temperature = 0; // motor_input;
 		rem_msg.variance = pilot_input;
 		
-		ROS_INFO("Pilot: %f, Roll: %f, RollSpeed: %f and u: %f, correction %f", pilot_input, currentRoll, currentRollSpeed, correction);
+		ROS_INFO("Pilot: %f, Roll: %f, RollSpeed: %f and\n u: %f, correction %f", pilot_input, currentRoll, currentRollSpeed, correction);
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
