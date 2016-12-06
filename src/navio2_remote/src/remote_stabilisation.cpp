@@ -23,6 +23,7 @@ float rollOffset;
 
 float currentRollSpeed;
 float speedOffset = -2.2;
+float trueSpeed;
 
 float correction;
 
@@ -39,10 +40,13 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	currentRollSpeed = imu_msg.angular_velocity.x;
 	
 	//keep calibration after 5 seconds
-	if(the_time < 5) rollOffset = currentRoll;
-
+	if(the_time < 15) 
+	{
+		rollOffset = currentRoll;
+		ROS_INFO("Hold still for %d secondes: calibration %f",the_time, rollOffset);
+	}
 	currentRoll -= rollOffset;
-	ROS_INFO("Hold still for 5 secondes: calibration %f", rollOffset);
+	
 }
 
 int main(int argc, char **argv)
@@ -91,12 +95,14 @@ int main(int argc, char **argv)
 	sensor_msgs::Temperature ctrl_msg;
 	
 	int initTime = ros::Time::now().sec%1000;
+	int i = 0;
 
 	while (ros::ok())
 	{
  
 	  // indication degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
-		u = K1*(currentRoll - rollOffset) + K2*(currentRollSpeed - speedOffset);	//degree, positif values of imu in clockwise
+		trueSpeed = currentRollSpeed - speedOffset;
+		u = K1*(currentRoll - rollOffset) + K2*trueSpeed;	//degree, positif values of imu in clockwise
 		correction = u*10;
 		pilot_input = PILOT_TRIM;			//rad->deg->amplitude pwm in ms
 		
@@ -108,8 +114,12 @@ int main(int argc, char **argv)
 		rem_msg.temperature = 0; // motor_input;
 		rem_msg.variance = pilot_input;
 		
-		ROS_INFO("Pilot: %f, Roll: %f, RollSpeed: %f and\n u: %f, correction %f", pilot_input, currentRoll, currentRollSpeed, correction);
-
+		i++;
+		if(i == 25)		//added by Pascal, to get insgiht on the code and what is happening
+		{
+		ROS_INFO("Pilot: %f, Roll: %f, RollSpeed: %f and\n u: %f, correction %f", pilot_input, currentRoll,trueSpeed , correction);
+		i=0
+		}
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
 		ctrl_msg.temperature = 0; //speed;//_filt;
