@@ -13,7 +13,7 @@
 #define PI 3.14159
 
 float K1 = 64.1997/10; //-64.1997;
-float K2 = 6.4701;
+float K2 = -6.4701;
 float u = 0;
 
 float currentRoll;
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
  
 	  // indication degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
 		trueSpeed = currentRollSpeed - speedOffset;
-		u = K1*currentRoll; // + K2*trueSpeed;	//degree, positif values of imu in clockwise, currentRoll was already amputed by offset
+		u = K1*currentRoll + K2*trueSpeed;	//degree, positif values of imu in clockwise, currentRoll was already amputed by offset
 		correction = u*10;
 		if(the_time > 15) pilot_input = PILOT_TRIM + correction;			//rad->deg->amplitude pwm in ms
 		
