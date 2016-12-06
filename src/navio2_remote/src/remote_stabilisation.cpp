@@ -12,6 +12,10 @@
 #define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
+float K1;
+float K2
+float u;
+
 float currentRoll;
 ros::Time currentTime;
 ros::Time previousTime;
@@ -36,9 +40,9 @@ int main(int argc, char **argv)
 	/*******************************************/
 	/* Definie LQR parameter */
 	/*******************************************/
-	float K1=-64.1997;
-	float K2=-6.4701;
-	float u;
+	K1 =-64.1997;
+	K2 =-6.4701;
+	u = 0;
 	
  	/***********************/
 	/* Initialize The Node */
@@ -89,7 +93,7 @@ int main(int argc, char **argv)
 		rem_msg.temperature = 0; // motor_input;
 		rem_msg.variance = pilot_input;
 		
-		ROS_INFO("Pilot: %d, Roll : %f and RollSpeed : %f", pilot_input, currentRoll, currentRollSpeed);
+		ROS_INFO("Pilot: %d, Roll: %f, RollSpeed: %f and u: %f", pilot_input, currentRoll, currentRollSpeed);
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
