@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	int lfsr = start_state;
 
 	int prbs_low = PILOT_TRIM - prbs_val;
-	int prbs_high= PILOT_TRIM + prbs_val;
+	int prbs_high = PILOT_TRIM + prbs_val;
 	int pilot_prbs = prbs_low;
 
 	//speed in m/s
@@ -139,10 +139,17 @@ int main(int argc, char **argv)
 		pilot_input = pilot_prbs;
 		
 		//Servo steering
+<<<<<<< HEAD
 		servo_input = rcin.read(2)-1500 + SERVO_TRIM;		
 		
 		// In case user has to make a curve to avoid an obstacle
 		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM - 50)		
+=======
+		servo_input = rcin.read(2) - 1500 + SERVO_TRIM; // centered the steering
+		
+		// In case user has to make a curve to avoid an obstacle
+		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
+>>>>>>> 6f880edf7cb63e2c6875420ff3f1b13582a09aef
 			pilot_input = PILOT_TRIM;
 		
 		//write readings on pwm output
