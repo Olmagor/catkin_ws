@@ -22,7 +22,7 @@ ros::Time previousTime;
 float rollOffset;
 
 float currentRollSpeed;
-float speedOffset = -2.2;
+float speedOffset = -2.25;
 float trueSpeed;
 
 float correction;
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 		i++;
 		if(i == 25)		//added by Pascal, to get insgiht on the code and what is happening
 		{
-		ROS_INFO("Pilot: %f, Roll: %f, RollSpeed: %f and\n u: %f, correction %f", pilot_input, currentRoll,trueSpeed , correction);
+		ROS_INFO("Pilot: %f, Roll: %f, RollOffset: %f\n RollSpeed: %f, u: %f, correction %f", pilot_input, currentRoll, rollOffset, trueSpeed, u, correction);
 		i=0;
 		}
 		//save values into msg container for the control readings
