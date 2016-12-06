@@ -26,6 +26,7 @@ float speedOffset = -2.2;
 
 float correction;
 
+int the_time = 0;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -88,6 +89,8 @@ int main(int argc, char **argv)
 
 	sensor_msgs::Temperature rem_msg;
 	sensor_msgs::Temperature ctrl_msg;
+	
+	int initTime = ros::Time::now().sec%1000;
 
 	while (ros::ok())
 	{
@@ -115,6 +118,9 @@ int main(int argc, char **argv)
 		// publish the messages
 		remote_pub.publish(rem_msg);
 		control_pub.publish(ctrl_msg);
+		
+		//Measure time for initial roll calibration
+		the_time = ros::Time::now().sec%1000-initTime;
 
 		ros::spinOnce();
 
