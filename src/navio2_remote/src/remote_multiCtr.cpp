@@ -42,6 +42,8 @@ float currentSpeed;
 ros::Time currentTimeSpeed;
 ros::Time previousTimeSpeed;
 
+float currentRollSpeed;
+
 //Roll Errors 1
 float err1;
 float derr1;
@@ -176,6 +178,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 	//current roll angle
 	currentRoll = imu_msg.orientation.x;
+	currentRollSpeed = imu_msg.angular_velocity.x;
 	//ROS_INFO("Time %d", the_time);			//Muted by Pascal
 
 	//keep calibration after 15 seconds
