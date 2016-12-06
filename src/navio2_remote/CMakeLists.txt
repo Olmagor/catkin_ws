@@ -143,9 +143,9 @@ target_link_libraries(remote_prbs_pascal util)
 
 add_executable(remote_stabilisation src/remote_stabilisation.cpp)
 target_link_libraries(remote_stabilisation ${catkin_LIBRARIES})
-target_link_libraries(remote_prbs_pascal rcinput)
-target_link_libraries(remote_prbs_pascal pwm)
-target_link_libraries(remote_prbs_pascal util)
+target_link_libraries(remote_stabilisation rcinput)
+target_link_libraries(remote_stabilisation pwm)
+target_link_libraries(remote_stabilisation util)
 
 # added by Pascal, i took away all the old scripts that used to be build but are no more useful i.e. all scritps
 # added by Pascal, to undo : copy and paste the content of CMakeLists_old.txt here
