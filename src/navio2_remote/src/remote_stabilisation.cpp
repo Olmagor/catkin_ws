@@ -30,7 +30,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 	//current roll angle, positif value in clockwise
 	currentRoll = imu_msg.orientation.x;		
-	currentRollSpeed = imu.angular_velocity.x;
+	currentRollSpeed = imu_msg.angular_velocity.x;
 }
 
 int main(int argc, char **argv)
