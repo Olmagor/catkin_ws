@@ -22,6 +22,8 @@ ros::Time previousTime;
 
 float currentRollSpeed;
 
+float correction;
+
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
 	//save the time of the aquisition
