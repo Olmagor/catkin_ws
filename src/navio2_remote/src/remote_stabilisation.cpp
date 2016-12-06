@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 		if(i == 25)		//added by Pascal, to get insgiht on the code and what is happening
 		{
 		ROS_INFO("Pilot: %f, Roll: %f, RollSpeed: %f and\n u: %f, correction %f", pilot_input, currentRoll,trueSpeed , correction);
-		i=0
+		i=0;
 		}
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
