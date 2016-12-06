@@ -20,7 +20,7 @@ float currentRoll;
 ros::Time currentTime;
 ros::Time previousTime;
 
-float currentRollSpeed
+float currentRollSpeed;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
