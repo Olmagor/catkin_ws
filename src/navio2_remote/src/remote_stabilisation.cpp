@@ -13,8 +13,9 @@
 #define PI 3.14159
 
 float K1 = 64.1997/15; //-64.1997;
-float K2 = 1.908;
+float K2 = -1.908;
 float u = 0;
+float amplitude = K1;
 
 float currentRoll;
 ros::Time currentTime;
@@ -54,11 +55,14 @@ int main(int argc, char **argv)
 	//argc = 0;
 	//argv = 0;
 	ROS_INFO("Beginning with stabilisation");
+	int freq = 100;
 	
 	/*******************************************/
 	/* Definie LQR parameter */
 	/*******************************************/
-
+	if(atoi(argv[1]) > 0 ) || atoi(argv[1]) < 10 ))
+	amplitude = atoi(argv[1]);
+	K1 = amplitude;
 	
  	/***********************/
 	/* Initialize The Node */
@@ -72,7 +76,7 @@ int main(int argc, char **argv)
 	ros::Subscriber imu_sub = n.subscribe("imu_readings", 1000, read_Imu);
 	
 	//running rate = freq Hz
-	ros::Rate loop_rate(50); // use to be a variable but now is imposed to 50Hz
+	ros::Rate loop_rate(freq); // use to be a variable but now is imposed to 50Hz
 	
 	/*******************************************/
 	/* Initialize the RC input, and PWM output */
@@ -88,7 +92,7 @@ int main(int argc, char **argv)
     	}
 	
 	pilot.enable(PILOT_PWM_OUT);
-	pilot.set_period(PILOT_PWM_OUT, 50);    //frequency 50Hz
+	pilot.set_period(PILOT_PWM_OUT, freq);    //frequency 50Hz
 	float pilot_input = PILOT_TRIM;
 
 	sensor_msgs::Temperature rem_msg;
