@@ -142,7 +142,7 @@ target_link_libraries(remote_prbs_pascal pwm)
 target_link_libraries(remote_prbs_pascal util)
 
 add_executable(remote_stabilisation src/remote_stabilisation.cpp)
-target_link_libraries(remote_prbs_pascal ${catkin_LIBRARIES})
+target_link_libraries(remote_stabilisation ${catkin_LIBRARIES})
 target_link_libraries(remote_prbs_pascal rcinput)
 target_link_libraries(remote_prbs_pascal pwm)
 target_link_libraries(remote_prbs_pascal util)
