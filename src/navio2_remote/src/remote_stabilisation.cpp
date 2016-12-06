@@ -12,7 +12,7 @@
 #define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
-float K1 = 64.1997/4; //-64.1997;
+float K1 = 64.1997/10; //-64.1997;
 float K2 = 6.4701;
 float u = 0;
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	
 	pilot.enable(PILOT_PWM_OUT);
 	pilot.set_period(PILOT_PWM_OUT, 50);    //frequency 50Hz
-	float pilot_input = 0;
+	float pilot_input = PILOT_TRIM;
 
 	sensor_msgs::Temperature rem_msg;
 	sensor_msgs::Temperature ctrl_msg;
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 		trueSpeed = currentRollSpeed - speedOffset;
 		u = K1*currentRoll + K2*trueSpeed;	//degree, positif values of imu in clockwise, currentRoll was already amputed by offset
 		correction = u*10;
-		pilot_input = PILOT_TRIM + correction;			//rad->deg->amplitude pwm in ms
+		if(the_time > 15) pilot_input = PILOT_TRIM + correction;			//rad->deg->amplitude pwm in ms
 		
 		//write readings on pwm output in miliseconds
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
