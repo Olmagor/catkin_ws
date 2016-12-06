@@ -140,12 +140,7 @@ int main(int argc, char **argv)
 		
 		//Servo steering
 		servo_input = rcin.read(2)-1500 + SERVO_TRIM;		
-		
-		// In case user has to make a curve to avoid an obstacle
-		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM - 50)		
-=======
-		servo_input = rcin.read(2) - 1500 + SERVO_TRIM; // centered the steering
-		
+			
 		// In case user has to make a curve to avoid an obstacle
 		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
 			pilot_input = PILOT_TRIM;
