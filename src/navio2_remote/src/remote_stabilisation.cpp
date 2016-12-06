@@ -12,9 +12,9 @@
 #define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
-float K1;
-float K2
-float u;
+float K1 = -64.1997;
+float K2 = -6.4701
+float u = 0;
 
 float currentRoll;
 ros::Time currentTime;
@@ -33,16 +33,14 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	currentRollSpeed = imu.angular_velocity.x;
 }
 
-int main(int argc, char **argv)
+int main()//int argc, char **argv)
 {
 	ROS_INFO("Beginning with stabilisation");
 	
 	/*******************************************/
 	/* Definie LQR parameter */
 	/*******************************************/
-	K1 =-64.1997;
-	K2 =-6.4701;
-	u = 0;
+
 	
  	/***********************/
 	/* Initialize The Node */
