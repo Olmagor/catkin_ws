@@ -139,7 +139,6 @@ int main(int argc, char **argv)
 		pilot_input = pilot_prbs;
 		
 		//Servo steering
-<<<<<<< HEAD
 		servo_input = rcin.read(2)-1500 + SERVO_TRIM;		
 		
 		// In case user has to make a curve to avoid an obstacle
@@ -149,7 +148,6 @@ int main(int argc, char **argv)
 		
 		// In case user has to make a curve to avoid an obstacle
 		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
->>>>>>> 6f880edf7cb63e2c6875420ff3f1b13582a09aef
 			pilot_input = PILOT_TRIM;
 		
 		//write readings on pwm output
