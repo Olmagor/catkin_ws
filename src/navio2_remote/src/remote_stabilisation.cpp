@@ -118,10 +118,10 @@ int main(int argc, char **argv)
 		if(the_time > 15) pilot_input = PILOT_TRIM + correction;	//to avoid moving during calibartion		
 
 		if( pilot_input < 600)		//limited to min pwm signal, to avoid problems
-		pilot_input = 600
+		pilot_input = 600;
 			
 		if( pilot_input > 2400)		//limited to max pwm signal, to avoid problems
-		pilot_input = 2400
+		pilot_input = 2400;
 
 		//write readings on pwm output in miliseconds
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
