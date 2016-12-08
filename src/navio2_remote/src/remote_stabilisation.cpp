@@ -27,7 +27,37 @@ float trueSpeed;
 
 float correction;
 
+//Roll Errors 1
+float err1;
+float derr1;
+float Kierr1;
+
+//PID parameters
+float Kp1;
+float Kd1;
 int the_time = 0;
+
+int Pilot_angle(int desired_roll) //in degrees
+{
+	//calculate errors
+	float previousErr = err1;
+	err1 = desired_roll - currentRoll;
+
+	long timeNow = currentTime.nsec;
+
+	//time between now and last roll message we got
+	double dTnsec = (timeNow - previousTime.nsec); // in nanoseconds
+	if(dTnsec < 0) dTnsec += 1e9; // watch out cause its in ns so if it goes beyond 1 sec ...
+	double dT = dTnsec/(1e9f);
+
+	if(dT > 0)
+		derr1 = (err1 - previousErr)/dT;
+
+	//PID CONTROLLER
+	float controlSignal = Kp1*err1 +  Kd1*derr1;
+
+	return controlSignal;
+}
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -56,7 +86,7 @@ int main(int argc, char **argv)
 	int freq = 50;
 	
 	/*******************************************/
-	/* Definie LQR parameter */
+	/* Definie parameter */
 	/*******************************************/
 	if((atof(argv[1])) != 0)		//attention, must be atof (and not atoi) because K1 et K2 are decimal numbers
 	{
@@ -67,6 +97,9 @@ int main(int argc, char **argv)
 		K2 = atof(argv[2]);
 
 	}
+	
+	Kp1 = K1;
+	Kd1 = K2;
 	
 	ROS_INFO("Beginning with stabilisation with amplitudes: %f and %f", K1, K2);
 	sleep(3);
@@ -109,17 +142,28 @@ int main(int argc, char **argv)
 	int i = 0;
 
 	while (ros::ok())
-	{
- 
+	{	
+		/*******************************************/
+		/* LQR controller */
+		/*******************************************/
 	  	// indication: degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
 		trueSpeed = currentRollSpeed - speedOffset;		//manual offset chosen empirically
 		u = K1*currentRoll + K2*trueSpeed;			//degree, positif values of imu in clockwise, currentRoll was already amputed by offset
 		correction = u*10;					//rdeg->amplitude pwm in ms
-		if(the_time > 15) pilot_input = PILOT_TRIM + correction;	//to avoid moving during calibartion		
-
+	
+		/*******************************************/
+		/* PID Controller */
+		/*******************************************/
+		u = Pilot_angle(0);
+		correction = u*10;					//rdeg->amplitude pwm in ms
+		
+		/*******************************************/
+		/* Control */
+		/*******************************************/
+		if(the_time > 15) pilot_input = PILOT_TRIM + correction;	//to avoid moving during calibartion
+		
 		if( pilot_input < 600)		//limited to min pwm signal, to avoid problems
 		pilot_input = 600;
-			
 		if( pilot_input > 2400)		//limited to max pwm signal, to avoid problems
 		pilot_input = 2400;
 
