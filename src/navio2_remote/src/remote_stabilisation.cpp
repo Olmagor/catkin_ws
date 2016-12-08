@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 		if((atoi(argv[1])) > -10  && (atoi(argv[1])) < 10 )
 		K1 = atoi(argv[1]);
 		
-		if((atoi(argv[2])) > -10  && (atoi(argv[2)) < 10 )
+		if((atoi(argv[2])) > -10  && (atoi(argv[2])) < 10 )
 		K2 = atoi(argv[2]);
 
 	}
