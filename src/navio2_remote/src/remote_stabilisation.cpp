@@ -14,7 +14,7 @@
 
 float K1 = -4.5463;	//-64.1997/12; //-64.1997;
 float K2 = -1.0975;	//-1.908;
-float u = 0;
+float u = 0;		// the desired angle of the pilot
 
 float currentRoll;
 ros::Time currentTime;
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 	/*******************************************/
 	/* Definie LQR parameter */
 	/*******************************************/
-	if((atof(argv[1])) != 0)
+	if((atof(argv[1])) != 0)		//attention, must be atof (and not atoi) because K1 et K2 are decimal numbers
 	{
 		if((atof(argv[1])) > -10  && (atof(argv[1])) < 10 )
 		K1 = atof(argv[1]);
@@ -111,12 +111,18 @@ int main(int argc, char **argv)
 	while (ros::ok())
 	{
  
-	  // indication degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
-		trueSpeed = currentRollSpeed - speedOffset;
-		u = K1*currentRoll + K2*trueSpeed;	//degree, positif values of imu in clockwise, currentRoll was already amputed by offset
-		correction = u*10;
-		if(the_time > 15) pilot_input = PILOT_TRIM + correction;			//rad->deg->amplitude pwm in ms
-		
+	  	// indication: degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
+		trueSpeed = currentRollSpeed - speedOffset;		//manual offset chosen empirically
+		u = K1*currentRoll + K2*trueSpeed;			//degree, positif values of imu in clockwise, currentRoll was already amputed by offset
+		correction = u*10;					//rdeg->amplitude pwm in ms
+		if(the_time > 15) pilot_input = PILOT_TRIM + correction;	//to avoid moving during calibartion		
+
+		if( pilot_input < 600)		//limited to min pwm signal, to avoid problems
+		pilot_input = 600
+			
+		if( pilot_input > 2400)		//limited to max pwm signal, to avoid problems
+		pilot_input = 2400
+
 		//write readings on pwm output in miliseconds
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
 		
@@ -126,7 +132,7 @@ int main(int argc, char **argv)
 		rem_msg.variance = pilot_input;
 		
 		i++;
-		if(i == 25)		//added by Pascal, to get insgiht on the code and what is happening
+		if(i == 25)		//To get insgiht on the code and what is happening
 		{
 		ROS_INFO("Pilot: %f, Roll: %f, RollOffset: %f\n RollSpeed: %f, u: %f, correction %f", pilot_input, currentRoll, rollOffset, trueSpeed, u, correction);
 		i=0;
@@ -143,10 +149,10 @@ int main(int argc, char **argv)
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
 
-		ros::spinOnce();
+		ros::spinOnce();			//Call this function to allow ROS to process incoming messages 
 
-		loop_rate.sleep();
-	}
+		loop_rate.sleep();			//Sleep for the rest of the cycle, to enforce the loop rate
+	}	
 
 return 0;
 
