@@ -58,13 +58,13 @@ int main(int argc, char **argv)
 	/*******************************************/
 	/* Definie LQR parameter */
 	/*******************************************/
-	if((atoi(argv[1])) != 0)
+	if((atof(argv[1])) != 0)
 	{
-		if((atoi(argv[1])) > -10  && (atoi(argv[1])) < 10 )
-		K1 = atoi(argv[1]);
+		if((atof(argv[1])) > -10  && (atof(argv[1])) < 10 )
+		K1 = atof(argv[1]);
 		
-		if((atoi(argv[2])) > -10  && (atoi(argv[2])) < 10 )
-		K2 = atoi(argv[2]);
+		if((atof(argv[2])) > -10  && (atof(argv[2])) < 10 )
+		K2 = atof(argv[2]);
 
 	}
 	
