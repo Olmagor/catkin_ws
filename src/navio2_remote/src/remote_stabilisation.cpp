@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	}
 	
 	ROS_INFO("Beginning with stabilisation with amplitudes: %f and %f", K1, K2);
-	sleep(1000);
+	sleep(3);
 							
  	/***********************/
 	/* Initialize The Node */
