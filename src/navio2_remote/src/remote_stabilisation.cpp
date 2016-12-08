@@ -12,7 +12,7 @@
 #define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
-float K1 = -3.9351;	//-64.1997/12; //-64.1997;
+float K1 = -3.7074;	//-64.1997/12; //-64.1997;
 float K2 = -0.4094;	//-1.908;
 float u = 0;
 float amplitude = K1;
