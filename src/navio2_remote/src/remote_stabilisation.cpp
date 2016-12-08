@@ -15,7 +15,6 @@
 float K1 = -4.5463;	//-64.1997/12; //-64.1997;
 float K2 = -1.0975;	//-1.908;
 float u = 0;
-float amplitude = K1;
 
 float currentRoll;
 ros::Time currentTime;
@@ -62,12 +61,16 @@ int main(int argc, char **argv)
 	if((atoi(argv[1])) != 0)
 	{
 		if((atoi(argv[1])) > -10  && (atoi(argv[1])) < 10 )
-		amplitude = atoi(argv[1]);
-		K1 = amplitude;
+		K1 = atoi(argv[1]);
+		
+		if((atoi(argv[2])) > -10  && (atoi(argv[2)) < 10 )
+		K2 = atoi(argv[2]);
+
 	}
 	
-	ROS_INFO("Beginning with stabilisation with amplitude: %f", K1);
-	
+	ROS_INFO("Beginning with stabilisation with amplitudes: %f and %f", K1, K2);
+	sleep(1000);
+							
  	/***********************/
 	/* Initialize The Node */
 	/***********************/
