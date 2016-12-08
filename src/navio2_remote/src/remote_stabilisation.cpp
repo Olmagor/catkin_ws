@@ -59,9 +59,12 @@ int main(int argc, char **argv)
 	/*******************************************/
 	/* Definie LQR parameter */
 	/*******************************************/
-	if((atoi(argv[1])) > 0  || (atoi(argv[1])) < 10 )
-	amplitude = atoi(argv[1]);
-	K1 = amplitude;
+	if((atoi(argv[1])) != 0)
+	{
+		if((atoi(argv[1])) > -10  || (atoi(argv[1])) < 10 )
+		amplitude = atoi(argv[1]);
+		K1 = amplitude;
+	}
 	
 	ROS_INFO("Beginning with stabilisation with amplitude: %f", K1);
 	
