@@ -14,6 +14,7 @@
 
 float K1 = -4.5463;	//-64.1997/12; //-64.1997;
 float K2 = -1.0975;	//-1.908;
+float K3 = 0:
 float u = 0;		// the desired angle of the pilot
 
 float currentRoll;
