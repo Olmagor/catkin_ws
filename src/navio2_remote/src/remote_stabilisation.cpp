@@ -94,24 +94,28 @@ int main(int argc, char **argv)
 	//argc = 0;
 	//argv = 0;
 	int freq = 50;
+	double max = 70;
 	
 	/*******************************************/
 	/* Definie parameter */
 	/*******************************************/
 	if((atof(argv[1])) != 0)		//attention, must be atof (and not atoi) because K1 et K2 are decimal numbers
 	{
-		if((atof(argv[1])) > -10  && (atof(argv[1])) < 10 )
+		if((atof(argv[1])) > -max/7  && (atof(argv[1])) < max/7 )
 		K1 = atof(argv[1]);
 		
-		if((atof(argv[2])) > -10  && (atof(argv[2])) < 10 )
+		if((atof(argv[2])) > -max  && (atof(argv[3])) < max )
 		K2 = atof(argv[2]);
-
+		
+		if((atof(argv[3])) > -max  && (atof(argv[3])) < max )
+		K3 = atof(argv[3]);
 	}
 	
-	Kp1 = K1;
-	Kd1 = K2;
+	Kp = K1;
+	Ki = K2;
+	Kd = K3;
 	
-	ROS_INFO("Beginning with stabilisation with amplitudes: %f and %f", K1, K2);
+	ROS_INFO("Beginning with stabilisation with amplitudes: %f and %f", K1, K2, K3);
 	sleep(3);
 							
  	/***********************/
