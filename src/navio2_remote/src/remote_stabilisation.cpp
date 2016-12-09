@@ -12,6 +12,7 @@
 #define PILOT_TRIM 1410.0f
 #define PI 3.14159
 
+//parameters of the controllers, are also KP, Ki, Kd
 float K1 = -4.5463;	//-64.1997/12; //-64.1997;
 float K2 = -1.0975;	//-1.908;
 float K3 = 0;
@@ -20,10 +21,10 @@ float u = 0;		// the desired angle of the pilot
 float currentRoll;
 ros::Time currentTime;
 ros::Time previousTime;
-float rollOffset;
+float rollOffset;			//calculated by the imu
 
 float currentRollSpeed;
-float speedOffset = -2.25;
+float speedOffset = -2.25;		//empirical estimation, for LQR controller
 float trueSpeed;
 
 float correction;
@@ -106,7 +107,7 @@ int main(int argc, char **argv)
 		if((atof(argv[1])) > -max/7  && (atof(argv[1])) < max/7 )
 		K1 = atof(argv[1]);
 		
-		if((atof(argv[2])) > -max  && (atof(argv[3])) < max )
+		if((atof(argv[2])) > -max  && (atof(argv[2])) < max )
 		K2 = atof(argv[2]);
 		
 		if((atof(argv[3])) > -max  && (atof(argv[3])) < max )
