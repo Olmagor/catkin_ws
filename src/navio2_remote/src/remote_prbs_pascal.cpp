@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 		rem_msg.temperature = motor_input;
 		rem_msg.variance = pilot_input;
 
-		dtf = rcin.read(4)-1000;				//Pascal: signal from the hall sensor
+		dtf = rcin.read(5)-1000;				//Pascal: signal from the hall sensor
 		speed = 4.0f*PI*R*1000.0f/((float)dtf);
 		if(speed < 0 || dtf < 40) speed = 0;
 		
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
 		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
-		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d, Hall sensor: %i and Speed: %f", motor_input, pilot_input, servo_input, dtf, speed);
+		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d, Hall sensor: %f and Speed: %f", motor_input, pilot_input, servo_input, dtf, speed);
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
