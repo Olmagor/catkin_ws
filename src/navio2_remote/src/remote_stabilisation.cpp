@@ -196,7 +196,7 @@ int main(int argc, char **argv)
 		{
 		//ROS_INFO("Pilot: %f, Roll: %f, RollOffset: %f\n u: %f, correction %f, dTnsec %d", pilot_input, currentRoll, rollOffset, u, correction, dTnsec/1e9);
 		dT_info = dTnsec/(1e9f);
-		ROS_INFO(" u: %f, dTnsec %d, dT \n Error %f, Derror %f and Ierror %f", u, dTnsec, dT_info, err, derr, Kierr);
+		ROS_INFO(" u: %f, dTnsec %d, dT %d\n Error %f, Derror %f and Ierror %f", u, dTnsec, dT_info, err, derr, Kierr);
 		i=0;
 		}
 		//save values into msg container for the control readings
