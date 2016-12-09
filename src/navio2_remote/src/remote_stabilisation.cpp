@@ -92,6 +92,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 
 int main(int argc, char **argv)
 {	
+	double dT_info;
 	//argc = 0;
 	//argv = 0;
 	int freq = 50;
@@ -193,7 +194,9 @@ int main(int argc, char **argv)
 		i++;
 		if(i == 25)		//To get insgiht on the code and what is happening
 		{
-		ROS_INFO("Pilot: %f, Roll: %f, RollOffset: %f\n u: %f, correction %f, dTnsec %d", pilot_input, currentRoll, rollOffset, u, correction, dTnsec/1e9);
+		//ROS_INFO("Pilot: %f, Roll: %f, RollOffset: %f\n u: %f, correction %f, dTnsec %d", pilot_input, currentRoll, rollOffset, u, correction, dTnsec/1e9);
+		dT_info = dTnsec/(1e9f);
+		ROS_INFO(" u: %f, dT %d\n Error %f, Derror %f and Ierror %f", u, dT_info, err, derr, Kierr);
 		i=0;
 		}
 		//save values into msg container for the control readings
