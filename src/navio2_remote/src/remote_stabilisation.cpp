@@ -171,8 +171,8 @@ int main(int argc, char **argv)
 		/*******************************************/
 		u = Pilot_angle(0);
 		correction = u*10;					//deg->amplitude pwm in ms
-		if(correction > 300) Kierr = 300;
-		if(correction < -300) Kierr = -300;
+		if(correction > 300) correction = 300;
+		if(correction < -300) correction = -300;
 		/*******************************************/
 		/* Control */
 		/*******************************************/
