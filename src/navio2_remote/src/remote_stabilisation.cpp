@@ -47,7 +47,7 @@ int Pilot_angle(int desired_roll) //in degrees
 {
 	//calculate errors
 	float previousErr = err;
-	err = desired_roll - currentRoll;
+	err = desired_roll - currentRoll - rollOffset;
 
 	long timeNow = currentTime.nsec;
 
@@ -62,8 +62,8 @@ int Pilot_angle(int desired_roll) //in degrees
 	Kierr += Ki*err*dT;
 
 	//anti wind-up (saturation)
-	if(Kierr > MAX_IERR) Kierr = MAX_IERR;
-	if(Kierr < -MAX_IERR) Kierr = -MAX_IERR;
+	//if(Kierr > MAX_IERR) Kierr = MAX_IERR;
+	//if(Kierr < -MAX_IERR) Kierr = -MAX_IERR;
 
 	//PID CONTROLLER
 	float controlSignal = Kp*err + Kierr +  Kd*derr;
@@ -87,7 +87,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 		rollOffset = currentRoll;
 		ROS_INFO("Hold still for %d secondes: calibration %f",the_time, rollOffset);
 	}
-	currentRoll -= rollOffset;
+	//currentRoll -= rollOffset;
 	
 }
 
