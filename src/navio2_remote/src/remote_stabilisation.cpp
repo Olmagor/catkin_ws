@@ -48,7 +48,7 @@ int Pilot_angle(int desired_roll) //in degrees
 {
 	//calculate errors
 	float previousErr = err;
-	err = desired_roll - (currentRoll - rollOffset);
+	err = desired_roll - currentRoll;		//should be other way roud but it is correct because the imu gives us positif roll in anticlockwise
 
 	long timeNow = currentTime.nsec;
 
