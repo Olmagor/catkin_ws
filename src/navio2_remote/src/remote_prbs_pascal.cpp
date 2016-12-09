@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 		if(rcin.read(3) >= saturation)
 			motor_input = saturation;
 		else
-			motor_input = (rcin.read(3)-1500)*1.2 + 1500;
+			motor_input = (rcin.read(3)-1500)*2 + 1500;
 
 		//pilot control with prbs
 		if(!ctr)
