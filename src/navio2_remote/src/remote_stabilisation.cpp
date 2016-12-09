@@ -47,7 +47,7 @@ int Pilot_angle(int desired_roll) //in degrees
 {
 	//calculate errors
 	float previousErr = err;
-	err = desired_roll - currentRoll - rollOffset;
+	err = desired_roll - (currentRoll - rollOffset);
 
 	long timeNow = currentTime.nsec;
 
