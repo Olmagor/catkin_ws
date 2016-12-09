@@ -19,7 +19,7 @@
 int main(int argc, char **argv)
 {
 	ROS_INFO("Start");
-	int saturation = 2000;
+	int saturation = 3000;
 	int prbs_val = 0; 		//default prbs signal
 	int freq = 50;
 
@@ -40,8 +40,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	if(atoi(argv[3]) > 2000) saturation = 2000;
-	else saturation = atoi(argv[3]);
+	if(atoi(argv[3]) < saturation) saturation = atoi(argv[3]);
 
 	ROS_INFO("Beginning with prbs : %d frequency %d, and saturation  : %d", prbs_val, freq, saturation);
 
@@ -166,7 +165,7 @@ int main(int argc, char **argv)
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
 		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
-		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d, Hall sensor: %f and Speed: %f", motor_input, pilot_input, servo_input, dtf, speed);
+		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d and Speed: %f", motor_input, pilot_input, servo_input, speed);
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
