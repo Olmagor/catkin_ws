@@ -11,7 +11,7 @@
 #define SERVO_PWM_OUT 6
 #define PILOT_PWM_OUT 3
 #define PRBS_FREQ 25 			//frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1
-#define SERVO_TRIM 1430.0f		//can be used to trim the steering if not done on the remote controller
+#define SERVO_TRIM 1420.0f		//can be used to trim the steering if not done on the remote controller
 #define PILOT_TRIM 1410.0f
 
 #define PI 3.14159
