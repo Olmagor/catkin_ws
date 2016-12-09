@@ -42,7 +42,7 @@ float Ki;
 
 int the_time = 0;
 double dTnsec = 0;
-int freq = 100;
+int freq = 50;
 
 int Pilot_angle(int desired_roll) //in degrees
 {
