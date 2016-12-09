@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	float speed = 0;
 	float speed_filt = 0;
 	int dtf = 0;// dtf read from arduino. dtf = dt*4 in msec
-	float R = 0.128/2f; //Rear Wheel Radius
+	float R = 0.064f; //Rear Wheel Radius D = 1280mm
 
 	int ctr = 0; //counter for the period divider 
 	while (ros::ok())
