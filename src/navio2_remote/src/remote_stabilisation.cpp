@@ -28,33 +28,43 @@ float trueSpeed;
 float correction;
 
 //Roll Errors 1
-float err1;
-float derr1;
-float Kierr1;
+float err;
+float derr;
+float Kierr;
+float MAX_IERR = 5;
 
 //PID parameters
-float Kp1;
-float Kd1;
+float Kp;
+float Kd;
+float Ki;
+
 int the_time = 0;
+double dTnsec = 0;
 
 int Pilot_angle(int desired_roll) //in degrees
 {
 	//calculate errors
-	float previousErr = err1;
-	err1 = desired_roll - currentRoll;
+	float previousErr = err;
+	err = desired_roll - currentRoll;
 
 	long timeNow = currentTime.nsec;
 
 	//time between now and last roll message we got
-	double dTnsec = (timeNow - previousTime.nsec); // in nanoseconds
+	dTnsec = (timeNow - previousTime.nsec); // in nanoseconds
 	if(dTnsec < 0) dTnsec += 1e9; // watch out cause its in ns so if it goes beyond 1 sec ...
 	double dT = dTnsec/(1e9f);
 
 	if(dT > 0)
 		derr1 = (err1 - previousErr)/dT;
+	
+	Kierr += Ki*err*dT;
+
+	//anti wind-up (saturation)
+	if(Kierr > MAX_IERR) Kierr = MAX_IERR;
+	if(Kierr < -MAX_IERR) Kierr = -MAX_IERR;
 
 	//PID CONTROLLER
-	float controlSignal = Kp1*err1 +  Kd1*derr1;
+	float controlSignal = Kp*err +  Kd*derr + Kierr;
 
 	return controlSignal;
 }
@@ -149,13 +159,13 @@ int main(int argc, char **argv)
 	  	// indication: degre to amplitude for pilot servo ; 90° = 900 microseconde --> 1° = 10 microsecondes
 		trueSpeed = currentRollSpeed - speedOffset;		//manual offset chosen empirically
 		u = K1*currentRoll + K2*trueSpeed;			//degree, positif values of imu in clockwise, currentRoll was already amputed by offset
-		correction = u*10;					//rdeg->amplitude pwm in ms
+		correction = u*10;					//deg->amplitude pwm in ms
 	
 		/*******************************************/
 		/* PID Controller */
 		/*******************************************/
 		u = Pilot_angle(0);
-		correction = u*10;					//rdeg->amplitude pwm in ms
+		correction = u*10;					//deg->amplitude pwm in ms
 		
 		/*******************************************/
 		/* Control */
@@ -178,7 +188,7 @@ int main(int argc, char **argv)
 		i++;
 		if(i == 25)		//To get insgiht on the code and what is happening
 		{
-		ROS_INFO("Pilot: %f, Roll: %f, RollOffset: %f\n RollSpeed: %f, u: %f, correction %f", pilot_input, currentRoll, rollOffset, trueSpeed, u, correction);
+		ROS_INFO("Pilot: %f, Roll: %f, RollOffset: %f\n u: %f, correction %f, dTnsec %d", pilot_input, currentRoll, rollOffset, u, correction, dTnsec/1e9);
 		i=0;
 		}
 		//save values into msg container for the control readings
