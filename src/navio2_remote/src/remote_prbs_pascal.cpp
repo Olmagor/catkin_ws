@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	float speed = 0;
 	float speed_filt = 0;
 	int dtf = 0;// dtf read from arduino. dtf = dt*4 in msec
-	float D = 0.128f; //Rear Wheel Radius
+	float R = 0.128/2f; //Rear Wheel Radius
 
 	int ctr = 0; //counter for the period divider 
 	while (ros::ok())
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 		rem_msg.variance = pilot_input;
 
 		dtf = rcin.read(5)-1000;				//Pascal: signal from the hall sensor
-		speed = 2.0f*PI*D*1000.0f/((float)dtf);
+		speed = 4.0f*PI*R*1000.0f/((float)dtf);
 		if(speed < 0 || dtf < 40) speed = 0;
 		
 		// low pass filtering of the speed with tau = 0.1
