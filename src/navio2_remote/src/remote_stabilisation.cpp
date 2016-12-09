@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 	Ki = K2;
 	Kd = K3;
 	
-	ROS_INFO("Beginning with stabilisation with amplitudes: %f and %f", K1, K2, K3);
+	ROS_INFO("Beginning with stabilisation with amplitudes: %f, %f and %f", K1, K2, K3);
 	sleep(3);
 							
  	/***********************/
