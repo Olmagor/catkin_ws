@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	ROS_INFO("Start");
 	int saturation = 2000;
 	int prbs_val = 0; 		//default prbs signal
-	int freq = 100;
+	int freq = 50;
 
 	ROS_INFO("number of argc %d", argc);
 	
@@ -94,8 +94,6 @@ int main(int argc, char **argv)
 	int pilot_input = 0;
 	int servo_input = 0;
 	
-	int servo_input_0 = rcin.read(2);
-
 	sensor_msgs::Temperature rem_msg;
 	sensor_msgs::Temperature ctrl_msg;
 
@@ -139,10 +137,10 @@ int main(int argc, char **argv)
 		pilot_input = pilot_prbs;
 		
 		//Servo steering
-		servo_input = rcin.read(2);//-1500 + SERVO_TRIM;		
+		servo_input = rcin.read(2)-1500 + SERVO_TRIM;		
 			
 		// In case user has to make a curve to avoid an obstacle
-		//if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
+		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
 			pilot_input = PILOT_TRIM;
 		
 		//write readings on pwm output
