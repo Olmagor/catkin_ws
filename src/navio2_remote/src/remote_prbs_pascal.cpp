@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	float speed = 0;
 	float speed_filt = 0;
 	int dtf = 0;// dtf read from arduino. dtf = dt*4 in msec
-	float R = 0.0625f; //Rear Wheel Radius
+	float D = 0.128f; //Rear Wheel Radius
 
 	int ctr = 0; //counter for the period divider 
 	while (ros::ok())
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 		rem_msg.variance = pilot_input;
 
 		dtf = rcin.read(5)-1000;				//Pascal: signal from the hall sensor
-		speed = 4.0f*PI*R*1000.0f/((float)dtf);
+		speed = 2.0f*PI*D*1000.0f/((float)dtf);
 		if(speed < 0 || dtf < 40) speed = 0;
 		
 		// low pass filtering of the speed with tau = 0.1
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
 		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
-		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d and Speed: %f, Hall sensor %f", motor_input, pilot_input, servo_input, speed, rcin.read(5));
+		ROS_INFO("Throttle :%d, Pilot: %d, Steering: %d and Speed: %f, Hall sensor %f", motor_input, pilot_input, servo_input, speed, dtf);
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
