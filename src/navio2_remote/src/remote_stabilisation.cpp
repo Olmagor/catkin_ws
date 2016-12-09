@@ -42,6 +42,7 @@ float Ki;
 
 int the_time = 0;
 double dTnsec = 0;
+int freq = 100;
 
 int Pilot_angle(int desired_roll) //in degrees
 {
@@ -57,9 +58,9 @@ int Pilot_angle(int desired_roll) //in degrees
 	double dT = dTnsec/(1e9f);
 
 	if(dT > 0)
-		derr = (err - previousErr)/dT;
+		derr = (err - previousErr)/(1/freq);
 	
-	Kierr += Ki*err*dT;
+	Kierr += Ki*err*(1/freq);
 
 	//anti wind-up (saturation)
 	if(Kierr > MAX_IERR) Kierr = MAX_IERR;
@@ -81,22 +82,19 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	currentRoll = imu_msg.orientation.x;		
 	currentRollSpeed = imu_msg.angular_velocity.x;
 	
-	//keep calibration after 5 seconds
+	//keep calibration after 15 seconds
 	if(the_time < 15) 
 	{
 		rollOffset = currentRoll;
 		ROS_INFO("Hold still for %d secondes: calibration %f",the_time, rollOffset);
 	}
-	//currentRoll -= rollOffset;
+	currentRoll -= rollOffset;
 	
 }
 
 int main(int argc, char **argv)
 {	
 	double dT_info;
-	//argc = 0;
-	//argv = 0;
-	int freq = 50;
 	double max = 70;
 	
 	/*******************************************/
