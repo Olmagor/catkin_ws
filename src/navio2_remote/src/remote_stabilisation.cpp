@@ -33,7 +33,7 @@ float correction;
 float err;
 float derr;
 float Kierr;
-float MAX_IERR = 5;
+float MAX_IERR = 50;
 
 //PID parameters
 float Kp;
@@ -62,8 +62,8 @@ int Pilot_angle(int desired_roll) //in degrees
 	Kierr += Ki*err*dT;
 
 	//anti wind-up (saturation)
-	//if(Kierr > MAX_IERR) Kierr = MAX_IERR;
-	//if(Kierr < -MAX_IERR) Kierr = -MAX_IERR;
+	if(Kierr > MAX_IERR) Kierr = MAX_IERR;
+	if(Kierr < -MAX_IERR) Kierr = -MAX_IERR;
 
 	//PID CONTROLLER
 	float controlSignal = Kp*err + Kierr +  Kd*derr;
