@@ -14,7 +14,7 @@
 
 float K1 = -4.5463;	//-64.1997/12; //-64.1997;
 float K2 = -1.0975;	//-1.908;
-float K3 = 0:
+float K3 = 0;
 float u = 0;		// the desired angle of the pilot
 
 float currentRoll;
@@ -56,7 +56,7 @@ int Pilot_angle(int desired_roll) //in degrees
 	double dT = dTnsec/(1e9f);
 
 	if(dT > 0)
-		derr1 = (err1 - previousErr)/dT;
+		derr = (err - previousErr)/dT;
 	
 	Kierr += Ki*err*dT;
 
