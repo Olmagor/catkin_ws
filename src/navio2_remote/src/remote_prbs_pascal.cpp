@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 		if(rcin.read(3) >= saturation)
 			motor_input = saturation;
 		else
-			motor_input = rcin.read(3);
+			motor_input = rcin.read(3)*2;
 
 		//pilot control with prbs
 		if(!ctr)
@@ -139,7 +139,7 @@ int main(int argc, char **argv)
 		servo_input = rcin.read(2)-1500 + SERVO_TRIM;		
 			
 		// In case user has to make a curve to avoid an obstacle
-		if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
+		if (servo_input > SERVO_TRIM + 75 || servo_input < SERVO_TRIM  - 75)		
 			pilot_input = PILOT_TRIM;
 		
 		//write readings on pwm output
