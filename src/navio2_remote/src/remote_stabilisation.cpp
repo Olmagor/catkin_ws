@@ -58,9 +58,9 @@ int Pilot_angle(int desired_roll) //in degrees
 	double dT = dTnsec/(1e9f);
 
 	if(dT > 0)
-		derr = (err - previousErr)/(1/freq);
+		derr = (err - previousErr)/0.02;
 	
-	Kierr += Ki*err*(1/freq);
+	Kierr += Ki*err*0.02;
 
 	//anti wind-up (saturation)
 	if(Kierr > MAX_IERR) Kierr = MAX_IERR;
