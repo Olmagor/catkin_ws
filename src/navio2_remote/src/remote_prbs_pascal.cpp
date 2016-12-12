@@ -22,6 +22,7 @@ ros::Time currentTime;
 ros::Time previousTime;
 float rollOffset;			//calculated by the imu
 
+int the_time = 0;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -140,6 +141,9 @@ int main(int argc, char **argv)
 	float R = 0.064f; //Rear Wheel Radius D = 1280mm
 
 	int ctr = 0; //counter for the period divider 
+	
+	int initTime = ros::Time::now().sec%1000;
+	
 	while (ros::ok())
 	{
 		ctr %= freq/PRBS_FREQ;
@@ -200,6 +204,9 @@ int main(int argc, char **argv)
 		ctrl_msg.header.stamp = ros::Time::now();
 		ctrl_msg.temperature = pilotRoll;
 		ctrl_msg.variance = currentRoll;
+		
+		//Measure time for initial roll calibration
+		the_time = ros::Time::now().sec%1000-initTime;
 
 		// publish the messages
 		remote_pub.publish(rem_msg);
