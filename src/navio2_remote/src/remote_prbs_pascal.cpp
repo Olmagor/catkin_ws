@@ -16,16 +16,40 @@
 
 #define PI 3.14159
 
+float currentRoll;
+ros::Time currentTime;
+ros::Time previousTime;
+float rollOffset;			//calculated by the imu
+
+float trueSpeed;
+
+void read_Imu(sensor_msgs::Imu imu_msg)
+{
+	//save the time of the aquisition
+	previousTime = currentTime;
+	currentTime = imu_msg.header.stamp;
+
+	//current roll angle
+	currentRoll = imu_msg.orientation.x;
+	//ROS_INFO("Time %d", the_time);			//Muted by Pascal
+
+	//keep calibration after 15 seconds
+	//if(the_time < 15) RollOffset = currentRoll;
+
+	//currentRoll -= RollOffset;
+	//ROS_INFO("New Roll %f", currentRoll);	//Muted by Pascal
+}
+
 int main(int argc, char **argv)
 {
 	ROS_INFO("Start");
-	int saturation = 3000;
+	int maxThrottle = 3000;		//max throttle in pwm, milisecondes
 	int prbs_val = 0; 		//default prbs signal
 	int freq = 50;
 
 	ROS_INFO("number of argc %d", argc);
 	
-	prbs_val = atoi(argv[1]);
+	prbs_val = atoi(argv[1]);			//prbs_val is the pwm apmilutude of the prbs signal on the pilot
 	if(prbs_val > 500 || prbs_val < 0)
 	{
 		ROS_INFO("prbs val must be between 0 and 500");
@@ -40,9 +64,9 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	if(atoi(argv[3]) < saturation) saturation = atoi(argv[3]);
+	if(atoi(argv[3]) < maxThrottle) maxThrottle = atoi(argv[3]);
 
-	ROS_INFO("Beginning with prbs : %d frequency %d, and saturation  : %d", prbs_val, freq, saturation);
+	ROS_INFO("Beginning with prbs : %d frequency %d, and maxThrottle  : %d", prbs_val, freq, maxThrottle);
 
 
  	/***********************/
@@ -53,6 +77,9 @@ int main(int argc, char **argv)
 	ros::Publisher remote_pub = n.advertise<sensor_msgs::Temperature>("remote_readings", 1000);
 	ros::Publisher control_pub = n.advertise<sensor_msgs::Temperature>("control_readings", 1000);
 	
+	//subscribe to imu topic
+	ros::Subscriber imu_sub = n.subscribe("imu_readings", 1000, read_Imu);
+
 	//running rate = freq Hz
 	ros::Rate loop_rate(freq);
 	
@@ -103,6 +130,8 @@ int main(int argc, char **argv)
 	int prbs_low = PILOT_TRIM - prbs_val;
 	int prbs_high = PILOT_TRIM + prbs_val;
 	int pilot_prbs = prbs_low;
+	
+	float pilotRoll = prbs_val/10; 		//pwm amplitude -> deg
 
 	//speed in m/s
 	float speed = 0;
@@ -116,8 +145,8 @@ int main(int argc, char **argv)
 		ctr %= freq/PRBS_FREQ;
 
 		//Throttle saturation
-		if(rcin.read(3) >= saturation)
-			motor_input = saturation;
+		if(rcin.read(3) >= maxThrottle)
+			motor_input = maxThrottle;
 		else
 			motor_input = rcin.read(3);
 
@@ -150,7 +179,7 @@ int main(int argc, char **argv)
 		//save values into msg container for the remote readings
 		rem_msg.header.stamp = ros::Time::now();
 		rem_msg.temperature = motor_input;
-		rem_msg.variance = pilot_input;
+		rem_msg.variance = servo_input;
 
 		dtf = rcin.read(5)-1000;				//Pascal: signal from the hall sensor
 		speed = 4.0f*PI*R*1000.0f/((float)dtf);
@@ -169,8 +198,8 @@ int main(int argc, char **argv)
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
-		ctrl_msg.temperature = speed;//_filt;
-		ctrl_msg.variance = 0;//here it's supposed to be the control output
+		ctrl_msg.temperature = pilotRoll;
+		ctrl_msg.variance = currentRoll;
 
 		// publish the messages
 		remote_pub.publish(rem_msg);
