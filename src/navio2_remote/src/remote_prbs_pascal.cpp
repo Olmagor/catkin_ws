@@ -166,7 +166,9 @@ int main(int argc, char **argv)
 				pilot_prbs = prbs_low;
 		}
 		ctr++;
-		pilot_input = pilot_prbs;
+		
+		//Pilot steering
+		if(the_time > 15) pilot_input = pilot_prbs; //to avoid moving during calibartion
 		
 		//Servo steering
 		servo_input = rcin.read(2) - 1500 + SERVO_TRIM;		
