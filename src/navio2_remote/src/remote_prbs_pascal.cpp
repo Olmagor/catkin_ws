@@ -169,6 +169,7 @@ int main(int argc, char **argv)
 		
 		//Pilot steering
 		if(the_time > 15) pilot_input = pilot_prbs; //to avoid moving during calibartion
+		pilotRoll = (pilot_prbs-PILOT_TRIM)/10; 		//pwm amplitude -> deg
 		
 		//Servo steering
 		servo_input = rcin.read(2) - 1500 + SERVO_TRIM;		
