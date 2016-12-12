@@ -34,9 +34,9 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	//ROS_INFO("Time %d", the_time);			//Muted by Pascal
 
 	//keep calibration after 15 seconds
-	if(the_time < 15) RollOffset = currentRoll;
+	if(the_time < 15) rollOffset  = currentRoll;
 
-	currentRoll -= RollOffset;
+	currentRoll -= rollOffset ;
 	//ROS_INFO("New Roll %f", currentRoll);	//Muted by Pascal
 }
 
