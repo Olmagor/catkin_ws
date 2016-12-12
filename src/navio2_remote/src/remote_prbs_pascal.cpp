@@ -5,6 +5,7 @@
 
 #include "ros/ros.h"
 #include "sensor_msgs/Temperature.h"
+#include "sensor_msgs/Imu.h"
 #include <sstream>
 
 #define MOTOR_PWM_OUT 9
@@ -21,7 +22,6 @@ ros::Time currentTime;
 ros::Time previousTime;
 float rollOffset;			//calculated by the imu
 
-float trueSpeed;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
