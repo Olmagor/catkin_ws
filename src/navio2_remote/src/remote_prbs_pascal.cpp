@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 				servo_input = rcin.read(2) - 1500 + SERVO_TRIM;
 				
 				// In case user has to make a curve to avoid an obstacle
-				if (servo_input > SERVO_TRIM + 75 || servo_input < SERVO_TRIM  - 75)		
+				if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
 					pilot_input = PILOT_TRIM;
 			break;
 			case 1: //means servo is prbs
