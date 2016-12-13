@@ -187,7 +187,7 @@ int main(int argc, char **argv)
 			case 0:	//means pilot is prbs
 				//Pilot steering
 				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs; //to avoid moving during calibartion
-				pilotRoll = (pilot_prbs)/10; 		//pwm amplitude -> deg
+				pilotRoll = (amp_prbs)/10; 		//pwm amplitude -> deg
 				
 				//Servo steering
 				servo_input = rcin.read(2) - 1500 + SERVO_TRIM;
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
 					servo_input = SERVO_TRIM;
 			  break;
 			default:
-			ROS_INFO('Error, bad input, quitting\n')
+			ROS_INFO("Error, bad input, quitting\n")
 				return 0
 			  break;
 		}
