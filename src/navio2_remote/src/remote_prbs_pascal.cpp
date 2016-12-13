@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
 		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
-		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, motor_input, speed);
+		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, motor_input, speed);
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
