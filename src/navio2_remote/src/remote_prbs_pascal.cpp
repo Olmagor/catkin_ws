@@ -17,7 +17,7 @@
 
 #define PI 3.14159
 
-float PRBS_FREQ = 25;
+int PRBS_FREQ = 25;
 
 float currentRoll;
 ros::Time currentTime;
