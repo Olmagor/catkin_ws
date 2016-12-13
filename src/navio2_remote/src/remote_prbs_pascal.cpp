@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 				
 				// In case user has to make a curve to avoid an obstacle
 				if (servo_input > SERVO_TRIM + prbs_val + 75 || servo_input < SERVO_TRIM - prbs_val - 75)		
-					servo_input = SERVO_TRIM;
+					servo_input = rcin.read(2) - 1500 + SERVO_TRIM;
 			  break;
 			default:
 			ROS_INFO("Error, bad input, quitting\n");
