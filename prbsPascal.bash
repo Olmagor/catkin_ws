@@ -2,7 +2,7 @@
 SESSION=$USER
 
 #no log
-if [ "$#" -eq 3 ]
+if [ "$#" -eq 4 ]
 then
     echo "Here we go in IDENTIFICATION PRBS MODE"
     sleep 2
@@ -21,8 +21,8 @@ then
     tmux send-keys "sleep 5" C-m
     tmux send-keys "sudo -i" C-m
     tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
-    tmux send-keys "rosrun navio2_remote remote_prbs_pascal $1 $2 $3" C-m
-elif [ "$#" -eq 4 ] && [ "$4" == '-log' ]          #to active the writing of the log files
+    tmux send-keys "rosrun navio2_remote remote_prbs_pascal $1 $2 $3 $4" C-m
+elif [ "$#" -eq 5 ] && [ "$5" == '-log' ]          #to active the writing of the log files
   then
       echo "Here we go in IDENTIFICATION PRBS MODE, WITH log files"
       sleep 2
@@ -48,8 +48,9 @@ elif [ "$#" -eq 4 ] && [ "$4" == '-log' ]          #to active the writing of the
       tmux send-keys "cd /home/pi/bagfiles" C-m
       tmux send-keys "rosbag record -a" C-m
 else
-    echo "Usage :   ./rosCustom.bash [prbs] [freq] [MaxThrottlePwm] [-log], -log is not necessary" #MaxThrottlePwm is limited to 2000 in the cpp
-    echo "[prbs] can be a value between 0 à 500 but best between 0 à 50, [freq] must be a positive value usually 50Hz"
+    echo "Usage :   ./rosCustom.bash [prbs amp] [freq ros] [freq prbs] [MaxThrottlePwm] [-log], -log is not necessary" #MaxThrottlePwm is limited to 2000 in the cpp
+    echo "[prbs amp] can be a value between 0 and 450 but best between 0 and 100, [freq ros] must be a positive value usually 50Hz"
+    echo "[prbs freq] must be a positive value usually between 20 and 100, [MaxThrottlePwm] can be a value between 1500 and 2000"
     exit 0
 fi
 
