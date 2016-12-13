@@ -205,7 +205,7 @@ int main(int argc, char **argv)
 					servo_input = SERVO_TRIM;
 			  break;
 			default:
-			ROS_INFO("Error, bad input, quitting\n")
+			ROS_INFO("Error, bad input, quitting\n");
 				return 0;
 			  break;
 		}
