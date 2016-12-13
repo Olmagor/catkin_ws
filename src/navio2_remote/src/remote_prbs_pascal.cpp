@@ -206,7 +206,7 @@ int main(int argc, char **argv)
 			  break;
 			default:
 			ROS_INFO("Error, bad input, quitting\n")
-				return 0
+				return 0;
 			  break;
 		}
 				
