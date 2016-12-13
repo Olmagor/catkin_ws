@@ -11,11 +11,13 @@
 #define MOTOR_PWM_OUT 9
 #define SERVO_PWM_OUT 6
 #define PILOT_PWM_OUT 3
-#define PRBS_FREQ 25 			//frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1
+//#define PRBS_FREQ 25 			//frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1
 #define SERVO_TRIM 1420.0f		//can be used to trim the steering if not done on the remote controller
 #define PILOT_TRIM 1410.0f
 
 #define PI 3.14159
+
+float PRBS_FREQ = 25;
 
 float currentRoll;
 ros::Time currentTime;
@@ -35,8 +37,12 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	//ROS_INFO("Time %d", the_time);			//Muted by Pascal
 
 	//keep calibration after 15 seconds
-	if(the_time < 15) rollOffset  = currentRoll;
-
+	if(the_time < 15) 
+	{
+		rollOffset = currentRoll;
+		ROS_INFO("Hold still for %d secondes: calibration %f",the_time, rollOffset);
+	}
+	
 	currentRoll -= rollOffset ;
 	//ROS_INFO("New Roll %f", currentRoll);	//Muted by Pascal
 }
@@ -51,21 +57,29 @@ int main(int argc, char **argv)
 	ROS_INFO("number of argc %d", argc);
 	
 	prbs_val = atoi(argv[1]);			//prbs_val is the pwm apmilutude of the prbs signal on the pilot
-	if(prbs_val > 500 || prbs_val < 0)
+	if(prbs_val > 450 || prbs_val < 0)
 	{
-		ROS_INFO("prbs val must be between 0 and 500");
+		ROS_INFO("prbs val must be between 0 and 450");
 		return 0;
 	}
 
-	if(atoi(argv[2]) > 0 )
-		freq = atoi(argv[2]);
+	PRBS_FREQ = atoi(argv[2]);			//prbs_val is the pwm apmilutude of the prbs signal on the pilot
+	if(PRBS_FREQ > 100 || PRBS_FREQ < 20)
+	{
+		ROS_INFO("prbs freq val must be between 0 and 450");
+		return 0;
+	}
+	
+	
+	if(atoi(argv[3]) > 0 )
+		freq = atoi(argv[3]);
 	else
 	{
 		ROS_INFO("Frequency must be more than 0");
 		return 0;
 	}
 
-	if(atoi(argv[3]) < maxThrottle) maxThrottle = atoi(argv[3]);
+	if(atoi(argv[4]) < maxThrottle) maxThrottle = atoi(argv[4]);
 
 	ROS_INFO("Beginning with prbs : %d frequency %d, and maxThrottle  : %d", prbs_val, freq, maxThrottle);
 
@@ -201,7 +215,14 @@ int main(int argc, char **argv)
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
 		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
+		i++;
+		if(i == freq/2)		//To get insgiht on the code and what is happening
+		{
 		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, motor_input, speed);
+		i=0;
+		}
+		
+		
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
