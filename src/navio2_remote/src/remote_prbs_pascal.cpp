@@ -14,10 +14,7 @@
 //#define PRBS_FREQ 25 			//frequency of the prbs signal : 8 bit => min = 25/8 max = 25/1
 #define SERVO_TRIM 1420.0f		//can be used to trim the steering if not done on the remote controller
 #define PILOT_TRIM 1410.0f
-
 #define PI 3.14159
-
-int PRBS_FREQ = 25;
 
 float currentRoll;
 ros::Time currentTime;
@@ -53,7 +50,9 @@ int main(int argc, char **argv)
 	int maxThrottle = 3000;		//max throttle in pwm, milisecondes
 	int prbs_val = 0; 		//default prbs signal
 	int freq = 50;
-
+	int actuator = 0;		//to choose on which components to apply the prbs signal, pilot or servo
+	int PRBS_FREQ = 25;
+	
 	ROS_INFO("number of argc %d", argc);
 	
 	prbs_val = atoi(argv[1]);			//prbs_val is the pwm apmilutude of the prbs signal on the pilot
@@ -69,8 +68,7 @@ int main(int argc, char **argv)
 		ROS_INFO("prbs freq val must be between 0 and 450");
 		return 0;
 	}
-	
-	
+		
 	if(atoi(argv[3]) > 0 )
 		freq = atoi(argv[3]);
 	else
@@ -78,11 +76,13 @@ int main(int argc, char **argv)
 		ROS_INFO("Frequency must be more than 0");
 		return 0;
 	}
-
+	
 	if(atoi(argv[4]) < maxThrottle) maxThrottle = atoi(argv[4]);
+	
+	actuator = atoi(argv[5]);
+	if(actuator != 1 && actuator != 0)	return 0;
 
-	ROS_INFO("Beginning with prbs : %d frequency %d, and maxThrottle  : %d", prbs_val, freq, maxThrottle);
-
+	//ROS_INFO("Beginning with prbs : %d frequency %d, and maxThrottle  : %d", prbs_val, freq, maxThrottle);
 
  	/***********************/
 	/* Initialize The Node */
@@ -142,11 +142,11 @@ int main(int argc, char **argv)
 	int start_state = 0x7D0;
 	int lfsr = start_state;
 
-	int prbs_low = PILOT_TRIM - prbs_val;
-	int prbs_high = PILOT_TRIM + prbs_val;
-	int pilot_prbs = prbs_low;
+	int prbs_low = -prbs_val;
+	int prbs_high = prbs_val;
+	int amp_prbs = prbs_low;
 	
-	float pilotRoll = prbs_val/10; 		//pwm amplitude -> deg
+	float pilotRoll = 0;
 
 	//speed in m/s
 	float speed = 0;
@@ -176,23 +176,40 @@ int main(int argc, char **argv)
 			lfsr = (lfsr >> 1) | (bit << 8); //was bit << 10 before
 
 			if (bit == 1)
-				pilot_prbs = prbs_high;
+				amp_prbs = prbs_high;
 			else if (bit == 0)
-				pilot_prbs = prbs_low;
+				amp_prbs = prbs_low;
 		}
 		ctr++;
 		
-		//Pilot steering
-		if(the_time > 15) pilot_input = pilot_prbs; //to avoid moving during calibartion
-		pilotRoll = (pilot_prbs-PILOT_TRIM)/10; 		//pwm amplitude -> deg
-		
-		//Servo steering
-		servo_input = rcin.read(2) - 1500 + SERVO_TRIM;		
-			
-		// In case user has to make a curve to avoid an obstacle
-		if (servo_input > SERVO_TRIM + 75 || servo_input < SERVO_TRIM  - 75)		
-			pilot_input = PILOT_TRIM;
-		
+		switch ( actuator ) 
+		{
+			case 0:	//means pilot is prbs
+				//Pilot steering
+				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs; //to avoid moving during calibartion
+				pilotRoll = (pilot_prbs)/10; 		//pwm amplitude -> deg
+				
+				//Servo steering
+				servo_input = rcin.read(2) - 1500 + SERVO_TRIM;
+				
+				// In case user has to make a curve to avoid an obstacle
+				if (servo_input > SERVO_TRIM + 75 || servo_input < SERVO_TRIM  - 75)		
+					pilot_input = PILOT_TRIM;
+			break;
+			case 1: //means servo is prbs
+				pilot_input = PILOT_TRIM;
+				if(the_time > 15) servo_input =rcin.read(2) - 1500 + SERVO_TRIM + amp_prbs; //to avoid moving during calibartion
+				
+				// In case user has to make a curve to avoid an obstacle
+				if (servo_input > SERVO_TRIM + prbs_val + 75 || servo_input < SERVO_TRIM - prbs_val - 75)		
+					servo_input = SERVO_TRIM;
+			  break;
+			default:
+			ROS_INFO('Error, bad input, quitting\n')
+				return 0
+			  break;
+		}
+				
 		//write readings on pwm output
 		motor.set_duty_cycle(MOTOR_PWM_OUT, ((float)motor_input)/1000.0f); 
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
