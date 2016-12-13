@@ -154,7 +154,8 @@ int main(int argc, char **argv)
 	int dtf = 0;// dtf read from arduino. dtf = dt*4 in msec
 	float R = 0.064f; //Rear Wheel Radius D = 1280mm
 
-	int ctr = 0; //counter for the period divider 
+	int ctr = 0; //counter for the period divider
+	int i = 0;	//coutner for information display
 	
 	int initTime = ros::Time::now().sec%1000;
 	
