@@ -58,14 +58,14 @@ int main(int argc, char **argv)
 	prbs_val = atoi(argv[1]);			//prbs_val is the pwm apmilutude of the prbs signal on the pilot
 	if(prbs_val > 450 || prbs_val < 0)
 	{
-		ROS_INFO("prbs val must be between 0 and 450");
+		ROS_INFO("amp prbs must be between 0 and 450");
 		return 0;
 	}
 
 	PRBS_FREQ = atoi(argv[2]);			//prbs_val is the pwm apmilutude of the prbs signal on the pilot
-	if(PRBS_FREQ > 100 || PRBS_FREQ < 20)
+	if(PRBS_FREQ > 100 || PRBS_FREQ < 0)
 	{
-		ROS_INFO("prbs freq val must be between 0 and 450");
+		ROS_INFO("prbs freq must be between 0 and 100");
 		return 0;
 	}
 		
