@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 				if(the_time > 15) servo_input =rcin.read(2) - 1500 + SERVO_TRIM + amp_prbs; //to avoid moving during calibartion
 				
 				// In case user has to make a curve to avoid an obstacle
-				if (servo_input > SERVO_TRIM + prbs_val + 75 || servo_input < SERVO_TRIM - prbs_val - 75)		
+				if (servo_input > SERVO_TRIM + prbs_val + 50 || servo_input < SERVO_TRIM - prbs_val - 50)		
 					servo_input = rcin.read(2) - 1500 + SERVO_TRIM;
 			  break;
 			default:
