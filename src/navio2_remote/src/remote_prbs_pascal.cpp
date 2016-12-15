@@ -68,30 +68,29 @@ int main(int argc, char **argv)
 		ROS_INFO("prbs freq must be between 0 and 100");
 		return 0;
 	}
-		
-	if(atoi(argv[3]) > 0 )
-		freq = atoi(argv[3]);
-	else
+	
+	freq = atoi(argv[3]);
+	if(freq <= 0 )
 	{
 		ROS_INFO("Frequency must be more than 0");
 		return 0;
 	}
 	
-	if(atoi(argv[4]) < maxThrottle) maxThrottle = atoi(argv[4]);
+	if(atoi(argv[4]) < maxThrottle) 
+		maxThrottle = atoi(argv[4]);
 	
 	actuator = atoi(argv[5]);
-	if(actuator != 1 && actuator != 0)	return 0;
+	if(actuator != 1 && actuator != 0)
+		return 0;
 
-	//ROS_INFO("Beginning with prbs : %d frequency %d, and maxThrottle  : %d", prbs_val, freq, maxThrottle);
-
- 	/***********************/
+	/***********************/
 	/* Initialize The Node */
 	/***********************/
 	ros::init(argc, argv, "remote_reading_handler");
 	ros::NodeHandle n;
-	ros::Publisher remote_pub = n.advertise<sensor_msgs::Temperature>("remote_readings", 1000);
-	ros::Publisher control_pub = n.advertise<sensor_msgs::Temperature>("control_readings", 1000);
-	ros::Publisher data_pub = n.advertise<sensor_msgs::Temperature>("data_readings", 1000);
+	ros::Publisher steering_pub = n.advertise<sensor_msgs::Temperature>("steering_readings", 1000);
+	ros::Publisher pilot_pub = n.advertise<sensor_msgs::Temperature>("pilot_readings", 1000);
+	ros::Publisher speed_pub = n.advertise<sensor_msgs::Temperature>("speed_readings", 1000);
 	
 	//subscribe to imu topic
 	ros::Subscriber imu_sub = n.subscribe("imu_readings", 1000, read_Imu);
@@ -136,9 +135,9 @@ int main(int argc, char **argv)
 	int pilot_input = 0;
 	int servo_input = 0;
 	
-	sensor_msgs::Temperature rem_msg;
-	sensor_msgs::Temperature ctrl_msg;
-	sensor_msgs::Temperature data_msg;
+	sensor_msgs::Temperature steering_msg;
+	sensor_msgs::Temperature pilot_msg;
+	sensor_msgs::Temperature speed_msg;
 	
 	//prbs start state
 	int start_state = 0x7D0;
@@ -237,29 +236,29 @@ int main(int argc, char **argv)
 		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, motor_input, speed);
 		i=0;
 		}
-		
+					
 		//save values into msg container for the remote readings
-		data_msg.header.stamp = ros::Time::now();ros::Time::now();
-		data_msg.temperature = motor_input;
-		data_msg.variance = speed;
-			
-		//save values into msg container for the remote readings
-		rem_msg.header.stamp = ros::Time::now();
-		rem_msg.temperature = servo_input;
-		rem_msg.variance = currentRoll;
+		steering_msg.header.stamp = ros::Time::now();
+		steering_msg.temperature = servo_input;
+		steering_msg.variance = currentRoll;
 
 		//save values into msg container for the control readings
-		ctrl_msg.header.stamp = ros::Time::now();
-		ctrl_msg.temperature = pilotRoll;
-		ctrl_msg.variance = currentRoll;
+		pilot_msg.header.stamp = ros::Time::now();
+		pilot_msg.temperature = pilotRoll;
+		pliot_msg.variance = currentRoll;
+		
+		//save values into msg container for the remote readings
+		speed_msg.header.stamp = ros::Time::now();
+		speed_msg.temperature = motor_input;
+		speed_msg.variance = speed;
+		
+		//publish the messages
+		steering_pub.publish(steering_msg);
+		pilot_pub.publish(pilot_msg);
+		speed_pub.publish(speed_msg);
 		
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
-
-		//publish the messages
-		remote_pub.publish(rem_msg);
-		control_pub.publish(ctrl_msg);
-		data_pub.publish(data_msg);
 
 		ros::spinOnce();		//Call this function to allow ROS to process incoming messages 
 
