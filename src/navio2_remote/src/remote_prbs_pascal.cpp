@@ -91,6 +91,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Publisher remote_pub = n.advertise<sensor_msgs::Temperature>("remote_readings", 1000);
 	ros::Publisher control_pub = n.advertise<sensor_msgs::Temperature>("control_readings", 1000);
+	ros::Publisher data_pub = n.advertise<sensor_msgs::Temperature>("data_readings", 1000);
 	
 	//subscribe to imu topic
 	ros::Subscriber imu_sub = n.subscribe("imu_readings", 1000, read_Imu);
@@ -137,7 +138,8 @@ int main(int argc, char **argv)
 	
 	sensor_msgs::Temperature rem_msg;
 	sensor_msgs::Temperature ctrl_msg;
-
+	sensor_msgs::Temperature data_msg;
+	
 	//prbs start state
 	int start_state = 0x7D0;
 	int lfsr = start_state;
@@ -215,10 +217,6 @@ int main(int argc, char **argv)
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
 		
-		//save values into msg container for the remote readings
-		rem_msg.header.stamp = ros::Time::now();
-		rem_msg.temperature = motor_input;
-		rem_msg.variance = servo_input;
 
 		dtf = rcin.read(5)-1000;				//Pascal: signal from the hall sensor
 		speed = 4.0f*PI*R*1000.0f/((float)dtf);
@@ -240,7 +238,15 @@ int main(int argc, char **argv)
 		i=0;
 		}
 		
-		
+		//save values into msg container for the remote readings
+		data_msg.header.stamp = ros::Time::now();ros::Time::now();
+		data_msg.temperature = motor_input;
+		data_msg.variance = speed;
+			
+		//save values into msg container for the remote readings
+		rem_msg.header.stamp = ros::Time::now();
+		rem_msg.temperature = servo_input;
+		rem_msg.variance = currentRoll;
 
 		//save values into msg container for the control readings
 		ctrl_msg.header.stamp = ros::Time::now();
@@ -250,13 +256,14 @@ int main(int argc, char **argv)
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
 
-		// publish the messages
+		//publish the messages
 		remote_pub.publish(rem_msg);
 		control_pub.publish(ctrl_msg);
+		data_pub.publish(data_msg);
 
-		ros::spinOnce();
+		ros::spinOnce();		//Call this function to allow ROS to process incoming messages 
 
-		loop_rate.sleep();
+		loop_rate.sleep();		//Sleep for the rest of the cycle, to enforce the loop rate
 
 	}
 
