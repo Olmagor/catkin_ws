@@ -245,7 +245,7 @@ int main(int argc, char **argv)
 		//save values into msg container for the control readings
 		pilot_msg.header.stamp = ros::Time::now();
 		pilot_msg.temperature = pilotRoll;
-		pliot_msg.variance = currentRoll;
+		pilot_msg.variance = currentRoll;
 		
 		//save values into msg container for the remote readings
 		speed_msg.header.stamp = ros::Time::now();
