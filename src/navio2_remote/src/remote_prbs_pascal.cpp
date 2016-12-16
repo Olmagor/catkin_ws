@@ -88,9 +88,9 @@ int main(int argc, char **argv)
 	/***********************/
 	ros::init(argc, argv, "remote_reading_handler");
 	ros::NodeHandle n;
-	//ros::Publisher steering_pub = n.advertise<sensor_msgs::Temperature>("steering_readings", 1000);
-	//ros::Publisher pilot_pub = n.advertise<sensor_msgs::Temperature>("pilot_readings", 1000);
-	//ros::Publisher speed_pub = n.advertise<sensor_msgs::Temperature>("speed_readings", 1000);
+	ros::Publisher steering_pub = n.advertise<sensor_msgs::Temperature>("steering_readings", 1000);
+	ros::Publisher pilot_pub = n.advertise<sensor_msgs::Temperature>("pilot_readings", 1000);
+	ros::Publisher speed_pub = n.advertise<sensor_msgs::Temperature>("speed_readings", 1000);
 	
 	//subscribe to imu topic
 	ros::Subscriber imu_sub = n.subscribe("imu_readings", 1000, read_Imu);
@@ -253,9 +253,9 @@ int main(int argc, char **argv)
 		speed_msg.variance = speed;
 		
 		//publish the messages
-		//steering_pub.publish(steering_msg);
-		//pilot_pub.publish(pilot_msg);
-		//speed_pub.publish(speed_msg);
+		steering_pub.publish(steering_msg);
+		pilot_pub.publish(pilot_msg);
+		speed_pub.publish(speed_msg);
 		
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
