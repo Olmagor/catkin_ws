@@ -45,7 +45,7 @@ elif [ "$#" -eq 6 ] && [ "$6" == '-log' ]          #to active the writing of the
       tmux split-window -v
       tmux send-keys "sleep 10" C-m                                       #no needs to start earlier because 10/15 sec of calibration
       tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
-      tmux send-keys "cd /home/pi" C-m
+      tmux send-keys "cd /home/pi/bagfiles" C-m
       tmux send-keys "rosbag record -a" C-m
 else
     echo "Usage :   ./rosCustom.bash [prbs amp] [freq prbs] [freq ros] [MaxThrottlePwm] [actuator] [-log], -log is not necessary" #MaxThrottlePwm is limited to 2000 in the cpp
