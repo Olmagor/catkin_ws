@@ -43,7 +43,7 @@ elif [ "$#" -eq 6 ] && [ "$6" == '-log' ]          #to active the writing of the
       tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
       tmux send-keys "rosrun navio2_remote remote_prbs_pascal $1 $2 $3 $4 $5" C-m
       tmux split-window -v
-      tmux send-keys "sleep 10" C-m                                       #no needs to start earlier because 10/15 sec of calibration
+      tmux send-keys "sleep 15" C-m                                       #no needs to start earlier because 10/15 sec of calibration
       tmux send-keys "source /home/pi/catkin_ws/devel/setup.bash" C-m
       tmux send-keys "cd /home/pi/bagfiles" C-m
       tmux send-keys "rosbag record -a" C-m
