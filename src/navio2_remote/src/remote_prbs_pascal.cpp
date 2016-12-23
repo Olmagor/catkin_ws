@@ -22,8 +22,8 @@ ros::Time previousTime;
 float rollOffset;			//calculated by the imu
 
 int32_t the_time = 0;
-int32_t old_time = 0;
-int32_t dt = 0;
+ros::Time old_time = 0;
+ros::Time dt = 0;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -213,7 +213,7 @@ int main(int argc, char **argv)
 			break;
 			case 2: //means pilot is prbs but this time pilot is steering
 				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs + (rcin.read(2) - 1500); //to avoid moving during calibartion
-				pilotRoll = (pilot_input)/10; 		//pwm amplitude -> deg, information for display 
+				pilotRoll = (amp_prbs + (rcin.read(2) - 1500))/10; 		//pwm amplitude -> deg, information for display 
 			break;
 			default:
 			ROS_INFO("Error, bad input, quitting\n");
@@ -242,7 +242,7 @@ int main(int argc, char **argv)
 		i++;
 		if(i == freq/2)		//To get insgiht on the code and what is happening
 		{
-		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, Te: %f Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, dt, motor_input, speed);
+		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, oldtime: %f, Te: %f Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, old_time, dt, motor_input, speed);
 		i=0;
 		}
 					
