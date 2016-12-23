@@ -239,13 +239,13 @@ int main(int argc, char **argv)
 		//ROS_INFO("dtf msec = %d    ---   Speed m/s = %f", dtf, speed);
 		//printf("[Thrust:%d] - [Pilot:%d] - [dtf:%4d] - [Speed:%2.2f]\n", motor_input, pilot_input, dtf, speed_filt);
 		//printf("rcin %d  %d  %d  %d  %d  %d  %d  %d\n",rcin.read(0), rcin.read(1), rcin.read(2), rcin.read(3), rcin.read(4), rcin.read(5), rcin.read(6), rcin.read(7));
-		i++;
+		/*i++;
 		if(i == freq/2)		//To get insgiht on the code and what is happening
 		{
 		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, oldtime: %f, Te: %f Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, old_time, dt, motor_input, speed);
 		i=0;
 		}
-					
+		*/			
 		//save values into msg container for the remote readings
 		steering_msg.header.stamp = ros::Time::now();
 		steering_msg.temperature = servo_input;
@@ -270,6 +270,13 @@ int main(int argc, char **argv)
 		the_time = ros::Time::now().sec%1000-initTime;
 		dt = ros::Time::now().nsec%10000;
 		old_time = ros::Time::now().nsec%10000-initTime;
+		
+		i++;
+		if(i == freq/2)		//To get insgiht on the code and what is happening
+		{
+		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, oldtime: %f, Te: %f Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, old_time, dt, motor_input, speed);
+		i=0;
+		}
 
 		ros::spinOnce();		//Call this function to allow ROS to process incoming messages 
 
