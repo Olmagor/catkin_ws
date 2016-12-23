@@ -22,8 +22,7 @@ ros::Time previousTime;
 float rollOffset;			//calculated by the imu
 
 int32_t the_time = 0;
-uint32_t old_time = 0;
-uint32_t dt = 0;
+
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -165,6 +164,9 @@ int main(int argc, char **argv)
 	int i = 0;	//coutner for information display
 	
 	int initTime = ros::Time::now().sec%1000;
+	
+	uint32_t old_time = ros::Time::now().nsec;
+	uint32_t dt = ros::Time::now().nsec;
 	
 	ROS_INFO("Here we go");
 	while (ros::ok())
