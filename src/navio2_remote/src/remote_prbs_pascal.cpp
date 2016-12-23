@@ -162,6 +162,7 @@ int main(int argc, char **argv)
 	
 	int initTime = ros::Time::now().sec%1000;
 	
+	ROS_INFO("Here we go");
 	while (ros::ok())
 	{
 		ctr %= freq/PRBS_FREQ;
