@@ -82,8 +82,12 @@ int main(int argc, char **argv)
 		maxThrottle = atoi(argv[4]);
 	
 	actuator = atoi(argv[5]);
-	if(actuator != 1 && actuator != 0)
+	if(actuator != 2 && actuator != 1 && actuator != 0)
+	{
+		ROS_INFO("Actuator must be a correct case");
 		return 0;
+	}
+
 
 	/***********************/
 	/* Initialize The Node */
