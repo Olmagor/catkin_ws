@@ -21,9 +21,9 @@ ros::Time currentTime;
 ros::Time previousTime;
 float rollOffset;			//calculated by the imu
 
-int the_time = 0;
-int old_time = 0;
-int dt = 0;
+float the_time = 0;
+float old_time = 0;
+double dt = 0;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -238,7 +238,7 @@ int main(int argc, char **argv)
 		i++;
 		if(i == freq/2)		//To get insgiht on the code and what is happening
 		{
-		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, motor_input, speed);
+		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %f, Te: %f Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, dt, motor_input, speed);
 		i=0;
 		}
 					
