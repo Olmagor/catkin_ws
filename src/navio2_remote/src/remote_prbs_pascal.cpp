@@ -163,7 +163,7 @@ int main(int argc, char **argv)
 	int ctr = 0; //counter for the period divider
 	int i = 0;	//coutner for information display
 	
-	int initTime = ros::Time::now().sec%1000;
+	int initTime = ros::Time::now().sec;
 	
 	uint32_t old_time = ros::Time::now().nsec;
 	uint32_t dt = ros::Time::now().nsec;
@@ -269,8 +269,8 @@ int main(int argc, char **argv)
 		speed_pub.publish(speed_msg);
 		
 		//Measure time for initial roll calibration
-		the_time = ros::Time::now().sec%1000-initTime;
-		dt = ros::Time::now().nsec - old_time;
+		the_time = ros::Time::now().sec-initTime;
+		dt = (ros::Time::now().nsec - old_time)/1000;
 		old_time = ros::Time::now().nsec;
 		
 		i++;
