@@ -273,7 +273,7 @@ int main(int argc, char **argv)
 		i++;
 		if(i == freq/2)		//To get insgiht on the code and what is happening
 		{
-		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, oldtime: %i, Te: %i Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, old_time, dt, motor_input, speed);
+		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, Te: %i Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, old_time, dt, motor_input, speed);
 		i=0;
 		}
 
