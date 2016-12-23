@@ -209,7 +209,7 @@ int main(int argc, char **argv)
 			break;
 			case 2: //means pilot is prbs but this time pilot is steering
 				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs + (rcin.read(2) - 1500); //to avoid moving during calibartion
-				pilotRoll = (amp_prbs)/10; 		//pwm amplitude -> deg, information for display 
+				pilotRoll = (pilot_input)/10; 		//pwm amplitude -> deg, information for display 
 			break;
 			default:
 			ROS_INFO("Error, bad input, quitting\n");
