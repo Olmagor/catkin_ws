@@ -269,8 +269,8 @@ int main(int argc, char **argv)
 		
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec-initTime;
-		dt = (ros::Time::now().nsec - oldtime)/1000;
-		oldtime = ros::Time::now().nsec;
+		dt = (ros::Time::now().nsec - oldtime)/1e6;		//to calculate the real frequency
+		oldtime = ros::Time::now().nsec;			//need 2 variables because of overflow, 2 overflow at the same time of you don't notice it, wheras for one you do (dt = dt - time:now)
 		
 		i++;
 		if(i == freq/2)		//To get insgiht on the code and what is happening
