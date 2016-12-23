@@ -269,7 +269,7 @@ int main(int argc, char **argv)
 		
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec-initTime;
-		dt = ros::Time::now().nsec - oldtime;
+		dt = (ros::Time::now().nsec - oldtime)/1000;
 		oldtime = ros::Time::now().nsec;
 		
 		i++;
