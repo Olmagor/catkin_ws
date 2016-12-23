@@ -22,6 +22,8 @@ ros::Time previousTime;
 float rollOffset;			//calculated by the imu
 
 int the_time = 0;
+int old_time = 0;
+int dt = 0;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -185,8 +187,7 @@ int main(int argc, char **argv)
 		
 		switch ( actuator ) 
 		{
-			case 0:	//means pilot is prbs
-				//Pilot steering
+			case 0:	//means pilot is prbs with wheel steering
 				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs; //to avoid moving during calibartion
 				pilotRoll = (amp_prbs)/10; 		//pwm amplitude -> deg
 				
@@ -197,14 +198,18 @@ int main(int argc, char **argv)
 				if (servo_input > SERVO_TRIM + 50 || servo_input < SERVO_TRIM  - 50)		
 					pilot_input = PILOT_TRIM;
 			break;
-			case 1: //means servo is prbs
+			case 1: //means wheel is prb with wheel steering
 				pilot_input = PILOT_TRIM;
 				if(the_time > 15) servo_input =rcin.read(2) - 1500 + SERVO_TRIM + amp_prbs; //to avoid moving during calibartion
 				
 				// In case user has to make a curve to avoid an obstacle
 				if (servo_input > SERVO_TRIM + prbs_val + 50 || servo_input < SERVO_TRIM - prbs_val - 50)		
 					servo_input = rcin.read(2) - 1500 + SERVO_TRIM;
-			  break;
+			break;
+			case 2: //means pilot is prbs but this time pilot is steering
+				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs + (rcin.read-1500); //to avoid moving during calibartion
+				pilotRoll = (amp_prbs)/10; 		//pwm amplitude -> deg, information for display 
+			break;
 			default:
 			ROS_INFO("Error, bad input, quitting\n");
 				return 0;
@@ -216,7 +221,6 @@ int main(int argc, char **argv)
 		pilot.set_duty_cycle(PILOT_PWM_OUT, ((float)pilot_input)/1000.0f);
 		servo.set_duty_cycle(SERVO_PWM_OUT, ((float)servo_input)/1000.0f);
 		
-
 		dtf = rcin.read(5)-1000;				//Pascal: signal from the hall sensor
 		speed = 4.0f*PI*R*1000.0f/((float)dtf);
 		if(speed < 0 || dtf < 40) speed = 0;
@@ -259,6 +263,8 @@ int main(int argc, char **argv)
 		
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
+		dt = the_time - old_time;
+		old_time = the_time;
 
 		ros::spinOnce();		//Call this function to allow ROS to process incoming messages 
 
