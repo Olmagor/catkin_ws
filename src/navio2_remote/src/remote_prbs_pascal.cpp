@@ -207,7 +207,7 @@ int main(int argc, char **argv)
 					servo_input = rcin.read(2) - 1500 + SERVO_TRIM;
 			break;
 			case 2: //means pilot is prbs but this time pilot is steering
-				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs + (rcin.read-1500); //to avoid moving during calibartion
+				if(the_time > 15) pilot_input = PILOT_TRIM + amp_prbs + (rcin.read(2) - 1500); //to avoid moving during calibartion
 				pilotRoll = (amp_prbs)/10; 		//pwm amplitude -> deg, information for display 
 			break;
 			default:
