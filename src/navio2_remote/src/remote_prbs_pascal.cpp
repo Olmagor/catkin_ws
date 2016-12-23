@@ -164,8 +164,6 @@ int main(int argc, char **argv)
 	int i = 0;	//coutner for information display
 	
 	int initTime = ros::Time::now().sec;
-	
-	uint32_t old_time = ros::Time::now().nsec;
 	uint32_t dt = ros::Time::now().nsec;
 	
 	ROS_INFO("Here we go");
@@ -270,8 +268,7 @@ int main(int argc, char **argv)
 		
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec-initTime;
-		dt = (ros::Time::now().nsec - old_time)/1000;
-		old_time = ros::Time::now().nsec;
+		dt = dt - ros::Time::now().nsec;
 		
 		i++;
 		if(i == freq/2)		//To get insgiht on the code and what is happening
