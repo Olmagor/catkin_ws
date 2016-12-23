@@ -21,9 +21,9 @@ ros::Time currentTime;
 ros::Time previousTime;
 float rollOffset;			//calculated by the imu
 
-float the_time = 0;
-float old_time = 0;
-double dt = 0;
+int32_t the_time = 0;
+int32_t old_time = 0;
+int32_t dt = 0;
 
 void read_Imu(sensor_msgs::Imu imu_msg)
 {
@@ -39,7 +39,7 @@ void read_Imu(sensor_msgs::Imu imu_msg)
 	if(the_time < 15) 
 	{
 		rollOffset = currentRoll;
-		ROS_INFO("Hold still for %d secondes: calibration %f",the_time, rollOffset);
+		ROS_INFO("Hold still for %i secondes: calibration %f",the_time, rollOffset);
 	}
 	
 	currentRoll -= rollOffset ;
@@ -242,7 +242,7 @@ int main(int argc, char **argv)
 		i++;
 		if(i == freq/2)		//To get insgiht on the code and what is happening
 		{
-		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %f, Te: %f Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, dt, motor_input, speed);
+		ROS_INFO("Current Roll: %f, Pilot Roll: %f, Steering: %d,\n Time: %i, Te: %f Throttle: %d and Speed: %f", currentRoll, pilotRoll, servo_input, the_time, dt, motor_input, speed);
 		i=0;
 		}
 					
@@ -268,8 +268,8 @@ int main(int argc, char **argv)
 		
 		//Measure time for initial roll calibration
 		the_time = ros::Time::now().sec%1000-initTime;
-		dt = the_time - old_time;
-		old_time = the_time;
+		dt = ros::Time::now().nsec-oldtime;
+		old_time = ros::Time::now().nsec;
 
 		ros::spinOnce();		//Call this function to allow ROS to process incoming messages 
 
